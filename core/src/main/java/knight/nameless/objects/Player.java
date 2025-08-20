@@ -39,10 +39,11 @@ public class Player extends GameObject {
 
         actualRegion = getAnimationRegion(deltaTime);
 
-        velocity.y -= 20.8f * deltaTime;
+        if (Gdx.input.isKeyPressed(Input.Keys.W))
+            velocity.y += speed * deltaTime;
 
-        bounds.y += velocity.y;
-        bounds.x += velocity.x;
+        else if (Gdx.input.isKeyPressed(Input.Keys.S))
+            velocity.y -= speed * deltaTime;
 
         if (Gdx.input.isKeyPressed(Input.Keys.D))
             velocity.x += speed * deltaTime;
@@ -51,13 +52,10 @@ public class Player extends GameObject {
             velocity.x -= speed * deltaTime;
 
         velocity.x *= 0.9f;
+        velocity.y *= 0.9f;
 
-        if (bounds.y < 0) {
-
-            bounds.y = 400 - bounds.height;
-            bounds.x = 500;
-            velocity.y = 0;
-        }
+        bounds.y += velocity.y;
+        bounds.x += velocity.x;
     }
 
     private AnimationState getPlayerCurrentState() {

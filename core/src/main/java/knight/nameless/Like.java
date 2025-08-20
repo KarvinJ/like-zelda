@@ -51,7 +51,7 @@ public class Like extends ApplicationAdapter {
         shapeRenderer = new ShapeRenderer();
 
         atlas = new TextureAtlas("images/sprites.atlas");
-        player = new Player(new Rectangle(450, 50, 32, 32), atlas);
+        player = new Player(new Rectangle(450, 100, 32, 32), atlas);
 
         gameObjects.add(player);
 
