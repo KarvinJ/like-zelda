@@ -166,10 +166,16 @@ public class Like extends ApplicationAdapter {
         MapProperties properties = tiledMap.getProperties();
 
         int mapWidth = properties.get("width", Integer.class);
+        int mapHeight = properties.get("height", Integer.class);
+
         int tilePixelWidth = properties.get("tilewidth", Integer.class);
+        int tilePixelHeight = properties.get("tileheight", Integer.class);
+
         int mapPixelWidth = mapWidth * tilePixelWidth;
+        int mapPixelHeight = mapHeight * tilePixelHeight;
 
         var midScreenWidth = SCREEN_WIDTH / 2f;
+        var midScreenHeight = SCREEN_HEIGHT / 2f;
 
         return playerPixelPosition.x > midScreenWidth && playerPixelPosition.x < mapPixelWidth - midScreenWidth;
     }
@@ -193,7 +199,7 @@ public class Like extends ApplicationAdapter {
         var isPlayerInsideMapBounds = isPlayerInsideMapBounds(playerPosition);
 
         if (!isDebugCamera && isPlayerInsideMapBounds)
-            camera.position.set(playerPosition.x, 180, 0);
+            camera.position.set(playerPosition.x, playerPosition.y, 0);
 
         camera.update();
     }
