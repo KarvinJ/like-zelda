@@ -161,7 +161,7 @@ public class Like extends ApplicationAdapter {
             camera.zoom -= 0.1f;
     }
 
-    public boolean isPlayerInsideMapBounds(Vector2 playerPixelPosition) {
+    public boolean isPlayerInsideMapBounds(Vector2 playerPosition) {
 
         MapProperties properties = tiledMap.getProperties();
 
@@ -177,7 +177,8 @@ public class Like extends ApplicationAdapter {
         var midScreenWidth = SCREEN_WIDTH / 2f;
         var midScreenHeight = SCREEN_HEIGHT / 2f;
 
-        return playerPixelPosition.x > midScreenWidth && playerPixelPosition.x < mapPixelWidth - midScreenWidth;
+        return playerPosition.x > midScreenWidth && playerPosition.x < mapPixelWidth - midScreenWidth
+            && playerPosition.y > midScreenHeight && playerPosition.y < mapPixelHeight - midScreenHeight;
     }
 
     private void update(float deltaTime) {
@@ -196,10 +197,10 @@ public class Like extends ApplicationAdapter {
 
         var playerPosition = new Vector2(player.bounds.x, player.bounds.y);
 
-        var isPlayerInsideMapBounds = isPlayerInsideMapBounds(playerPosition);
+//        var isPlayerInsideMapBounds = isPlayerInsideMapBounds(playerPosition);
 
-        if (!isDebugCamera && isPlayerInsideMapBounds)
-            camera.position.set(playerPosition.x, playerPosition.y, 0);
+        if (!isDebugCamera /*&& isPlayerInsideMapBounds*/)
+            camera.position.set(playerPosition, 0);
 
         camera.update();
     }
