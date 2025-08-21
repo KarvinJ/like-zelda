@@ -2,10 +2,10 @@
 <map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="80" height="60" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="28">
  <tileset firstgid="1" source="tileset/environment.tsx"/>
  <objectgroup id="3" name="Collisions">
-  <object id="13" x="34.807" y="911.333" width="618.457" height="48.6667"/>
-  <object id="25" x="37.0526" y="481.298" width="621.825" height="48.6667"/>
+  <object id="13" x="34.807" y="911.333" width="621.123" height="48.6667"/>
+  <object id="25" x="34.7193" y="479.964" width="621.158" height="48.6667"/>
   <object id="26" x="655.715" y="480.175" width="33.474" height="479.824"/>
-  <object id="27" x="2.24561" y="481.298" width="33.474" height="476.456"/>
+  <object id="27" x="0.912277" y="479.631" width="34.8073" height="480.456"/>
  </objectgroup>
  <objectgroup id="5" name="Enemies">
   <object id="20" x="96" y="875.333" width="32" height="32"/>
