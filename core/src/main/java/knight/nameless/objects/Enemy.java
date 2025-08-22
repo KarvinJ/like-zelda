@@ -43,10 +43,10 @@ public class Enemy extends GameObject {
             actualRegion = runningAnimation.getKeyFrame(stateTimer, true);
 
             if (isMovingRight && velocity.x <= 4)
-                bounds.x += speed * deltaTime;
+                velocity.x += speed * deltaTime;
 
             else if (!isMovingRight && velocity.x >= -4)
-                bounds.x -= speed * deltaTime;
+                velocity.x -= speed * deltaTime;
 
             velocity.x *= 0.9f;
 
@@ -57,6 +57,7 @@ public class Enemy extends GameObject {
 
     @Override
     public void draw(Batch batch) {
+
         if (!isDestroyed || stateTimer < 1)
             super.draw(batch);
     }

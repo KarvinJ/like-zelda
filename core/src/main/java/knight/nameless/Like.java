@@ -135,6 +135,11 @@ public class Like extends ApplicationAdapter {
                         gameObject.bounds.x = structure.x + structure.width;
 
                     gameObject.velocity.x = 0;
+
+                    var isEnemy = gameObject instanceof Enemy;
+
+                    if (isEnemy)
+                        ((Enemy) gameObject).changeDirection();
                 }
             }
         }
@@ -143,42 +148,50 @@ public class Like extends ApplicationAdapter {
     private void controlCameraPosition(OrthographicCamera camera) {
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            camera.position.x += 1;
+            camera.position.x += 5;
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            camera.position.x -= 1;
+            camera.position.x -= 5;
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP))
-            camera.position.y += 1;
+            camera.position.y += 5;
 
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            camera.position.y -= 1;
+            camera.position.y -= 5;
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F3))
-            camera.zoom += 0.1f;
+            camera.zoom += 0.2f;
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F4))
-            camera.zoom -= 0.1f;
+            camera.zoom -= 0.2f;
     }
 
-    public boolean isPlayerInsideMapBounds(Vector2 playerPosition) {
+    public boolean isPlayerXPositionInsideMapBounds(Vector2 playerPosition) {
 
         MapProperties properties = tiledMap.getProperties();
 
         int mapWidth = properties.get("width", Integer.class);
-        int mapHeight = properties.get("height", Integer.class);
-
         int tilePixelWidth = properties.get("tilewidth", Integer.class);
-        int tilePixelHeight = properties.get("tileheight", Integer.class);
 
         int mapPixelWidth = mapWidth * tilePixelWidth;
-        int mapPixelHeight = mapHeight * tilePixelHeight;
 
         var midScreenWidth = SCREEN_WIDTH / 2f;
+
+        return playerPosition.x > midScreenWidth && playerPosition.x < mapPixelWidth - midScreenWidth;
+    }
+
+    public boolean isPlayerYPositionInsideMapBounds(Vector2 playerPosition) {
+
+        var properties = tiledMap.getProperties();
+
+        int mapHeight = properties.get("height", Integer.class);
+        int tilePixelHeight = properties.get("tileheight", Integer.class);
+
+        int mapPixelHeight = mapHeight * tilePixelHeight;
+
         var midScreenHeight = SCREEN_HEIGHT / 2f;
 
-        return playerPosition.x > midScreenWidth && playerPosition.x < mapPixelWidth - midScreenWidth
-            && playerPosition.y > midScreenHeight && playerPosition.y < mapPixelHeight - midScreenHeight;
+        return playerPosition.y > midScreenHeight && playerPosition.y < mapPixelHeight - midScreenHeight;
     }
 
     private void update(float deltaTime) {
@@ -194,13 +207,18 @@ public class Like extends ApplicationAdapter {
 
         if (isDebugCamera)
             controlCameraPosition(camera);
+        else {
 
-        var playerPosition = new Vector2(player.bounds.x, player.bounds.y);
+            var playerPosition = new Vector2(player.bounds.x, player.bounds.y);
 
-//        var isPlayerInsideMapBounds = isPlayerInsideMapBounds(playerPosition);
+            var isPlayerXPositionInsideMapBounds = isPlayerXPositionInsideMapBounds(playerPosition);
+//            var isPlayerYPositionInsideMapBounds = isPlayerYPositionInsideMapBounds(playerPosition);
 
-        if (!isDebugCamera /*&& isPlayerInsideMapBounds*/)
-            camera.position.set(playerPosition, 0);
+            if (isPlayerXPositionInsideMapBounds)
+                camera.position.set(playerPosition, 0);
+            else
+                camera.position.set(camera.position.x, playerPosition.y, 0);
+        }
 
         camera.update();
     }
@@ -227,8 +245,6 @@ public class Like extends ApplicationAdapter {
     public void render() {
 
         float deltaTime = Gdx.graphics.getDeltaTime();
-
-        System.out.println(deltaTime);
 
         update(deltaTime);
 
