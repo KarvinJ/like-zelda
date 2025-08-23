@@ -237,7 +237,7 @@ public class Like extends ApplicationAdapter {
 
         mapRenderer.setView(camera);
         mapRenderer.render();
-        
+
         mapRenderer.getBatch().setProjectionMatrix(viewport.getCamera().combined);
         mapRenderer.getBatch().begin();
 
