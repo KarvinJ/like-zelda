@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 public class Enemy extends GameObject {
 
@@ -44,18 +45,23 @@ public class Enemy extends GameObject {
 
             actualRegion = runningAnimation.getKeyFrame(stateTimer, true);
 
-            if (isMovingRight && velocity.x <= 100)
-                velocity.x += speed;
-
-            else if (!isMovingRight && velocity.x >= -100)
-                velocity.x -= speed;
-
-            velocity.x *= 0.9f;
-            velocity.y *= 0.9f;
-
-            bounds.x += velocity.x * deltaTime;
-            bounds.y += velocity.y * deltaTime;
+//            patrolEnemy(deltaTime);
         }
+    }
+
+    private void patrolEnemy(float deltaTime) {
+
+        if (isMovingRight && velocity.x <= 100)
+            velocity.x += speed;
+
+        else if (!isMovingRight && velocity.x >= -100)
+            velocity.x -= speed;
+
+        velocity.x *= 0.9f;
+        velocity.y *= 0.9f;
+
+        bounds.x += velocity.x * deltaTime;
+        bounds.y += velocity.y * deltaTime;
     }
 
     @Override
@@ -74,5 +80,22 @@ public class Enemy extends GameObject {
 
     public void changeDirection(){
         isMovingRight = !isMovingRight;
+    }
+
+    public void followThePlayer(float deltaTime, Vector2 playerPosition) {
+
+        if (isDestroyed)
+            return;
+
+        var actualPosition = getActualPosition();
+
+        var directionToFollow = new Vector2(0, 0);
+        directionToFollow.x = (playerPosition.x) - (actualPosition.x);
+        directionToFollow.y = (playerPosition.y) - (actualPosition.y);
+        directionToFollow.nor();
+
+        int followSpeed = speed * 2;
+        bounds.x += directionToFollow.x * followSpeed * deltaTime;
+        bounds.y += directionToFollow.y * followSpeed * deltaTime;
     }
 }

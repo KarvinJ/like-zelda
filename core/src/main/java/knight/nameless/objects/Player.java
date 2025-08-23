@@ -23,7 +23,6 @@ public class Player extends GameObject {
     private boolean isMovingRight = false;
     private final Array<Bullet> bullets = new Array<>();
 
-
     public Player(Rectangle bounds, TextureAtlas atlas) {
         super(
             bounds,

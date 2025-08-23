@@ -63,6 +63,10 @@ public abstract class GameObject {
         return new Rectangle(positionX, positionY, bounds.width, bounds.height);
     }
 
+    public Vector2 getActualPosition() {
+        return new Vector2(bounds.x, bounds.y);
+    }
+
     public void dispose() {
         actualRegion.getTexture().dispose();
     }

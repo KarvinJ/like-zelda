@@ -209,6 +209,8 @@ public class Like extends ApplicationAdapter {
                     actualEnemy.setToDestroy = true;
 
                 player.hasBulletCollide(actualEnemy);
+
+                actualEnemy.followThePlayer(deltaTime, player.getActualPosition());
             }
         }
 
