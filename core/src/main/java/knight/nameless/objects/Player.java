@@ -5,7 +5,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 
 public class Player extends GameObject {
 
@@ -17,6 +19,7 @@ public class Player extends GameObject {
     private final Animation<TextureRegion> runningAnimation;
     private float animationTimer;
     private boolean isMovingRight;
+    private final Array<Rectangle> bullets = new Array<>();
 
     public Player(Rectangle bounds, TextureAtlas atlas) {
         super(
@@ -56,6 +59,32 @@ public class Player extends GameObject {
 
         bounds.x += velocity.x * deltaTime;
         bounds.y += velocity.y * deltaTime;
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+            shootBullet();
+
+        for (var bullet :bullets) {
+
+            bullet.x += 500 * deltaTime;
+//            bullet.y += speed * deltaTime;
+        }
+    }
+
+    @Override
+    public void draw(ShapeRenderer shapeRenderer) {
+
+        for (var bullet :bullets) {
+
+            shapeRenderer.rect(bullet.x, bullet.y, bullet.width, bullet.height);
+        }
+
+        super.draw(shapeRenderer);
+    }
+
+    private void shootBullet() {
+
+        var bulletBounds = new Rectangle(bounds.x, bounds.y, 8, 8);
+        bullets.add(bulletBounds);
     }
 
     private AnimationState getPlayerCurrentState() {
@@ -103,6 +132,15 @@ public class Player extends GameObject {
         previousState = actualState;
 
         return region;
+    }
+
+    public void checkBulletCollision(Enemy enemy) {
+
+        for (var bullet :bullets) {
+
+            if (bullet.overlaps(enemy.bounds))
+                enemy.setToDestroy = true;
+        }
     }
 
     private void flipPlayerOnXAxis(TextureRegion region) {

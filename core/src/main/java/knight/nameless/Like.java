@@ -198,8 +198,17 @@ public class Like extends ApplicationAdapter {
             gameObject.update(deltaTime);
             manageStructureCollision(deltaTime, gameObject);
 
-            if (gameObject instanceof Enemy && player.bounds.overlaps(gameObject.bounds))
-                ((Enemy) gameObject).setToDestroy = true;
+            var isAnEnemy = gameObject instanceof Enemy;
+
+            if (isAnEnemy) {
+
+                var actualEnemy = ((Enemy) gameObject);
+
+                if (player.bounds.overlaps(gameObject.bounds))
+                    actualEnemy.setToDestroy = true;
+
+                player.checkBulletCollision(actualEnemy);
+            }
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F2))
