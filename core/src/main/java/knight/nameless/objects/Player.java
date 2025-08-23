@@ -9,16 +9,17 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.Iterator;
+
 public class Player extends GameObject {
 
     private enum AnimationState {FALLING, JUMPING, STANDING, RUNNING}
-    private AnimationState actualState;
-    private AnimationState previousState;
+    private AnimationState previousState = AnimationState.STANDING;
     private final TextureRegion jumpingRegion;
     private final Animation<TextureRegion> standingAnimation;
     private final Animation<TextureRegion> runningAnimation;
-    private float animationTimer;
-    private boolean isMovingRight;
+    private float animationTimer = 0;
+    private boolean isMovingRight = false;
     private final Array<Rectangle> bullets = new Array<>();
 
     public Player(Rectangle bounds, TextureAtlas atlas) {
@@ -27,13 +28,8 @@ public class Player extends GameObject {
             new TextureRegion(atlas.findRegion("Idle"), 0, 0, 32, 32)
         );
 
-        previousState = AnimationState.STANDING;
-        actualState = AnimationState.STANDING;
-
         standingAnimation = makeAnimationByTotalFrames(atlas.findRegion("Idle"), 5);
-
         jumpingRegion = new TextureRegion(atlas.findRegion("Jump"), 0, 0, 32, 32);
-
         runningAnimation = makeAnimationByTotalFrames(atlas.findRegion("Run"), 5);
     }
 
@@ -106,7 +102,7 @@ public class Player extends GameObject {
 
     private TextureRegion getAnimationRegion(float deltaTime) {
 
-        actualState = getPlayerCurrentState();
+        AnimationState actualState = getPlayerCurrentState();
 
         TextureRegion region;
 
@@ -134,12 +130,31 @@ public class Player extends GameObject {
         return region;
     }
 
-    public void checkBulletCollision(Enemy enemy) {
+    public void hasBulletCollide(Enemy enemy) {
 
-        for (var bullet :bullets) {
+        if (enemy.isDestroyed)
+            return;
 
-            if (bullet.overlaps(enemy.bounds))
+        for (Iterator<Rectangle> iterator = bullets.iterator(); iterator.hasNext();) {
+
+            Rectangle bullet = iterator.next();
+
+            if (bullet.overlaps(enemy.bounds)) {
+
                 enemy.setToDestroy = true;
+                iterator.remove();
+            }
+        }
+    }
+
+    public void hasBulletCollide(Rectangle structureBounds) {
+
+        for (Iterator<Rectangle> iterator = bullets.iterator(); iterator.hasNext();) {
+
+            Rectangle bullet = iterator.next();
+
+            if (bullet.overlaps(structureBounds))
+                iterator.remove();
         }
     }
 

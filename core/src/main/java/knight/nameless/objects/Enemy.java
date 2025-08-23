@@ -13,7 +13,7 @@ public class Enemy extends GameObject {
     private float stateTimer;
     public boolean isMovingRight;
     public boolean setToDestroy;
-    private boolean isDestroyed;
+    public boolean isDestroyed;
 
     public Enemy(Rectangle bounds, TextureAtlas atlas) {
         super(

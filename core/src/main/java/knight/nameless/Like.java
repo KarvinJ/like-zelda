@@ -105,6 +105,9 @@ public class Like extends ApplicationAdapter {
 
         for (var structure : collisionBounds) {
 
+            if (gameObject instanceof Player)
+                player.hasBulletCollide(structure);
+
             if (gameObject.bounds.overlaps(structure)) {
 
                 if (checkCollisionInX(gameObject.getPreviousPosition(), structure)) {
@@ -198,16 +201,14 @@ public class Like extends ApplicationAdapter {
             gameObject.update(deltaTime);
             manageStructureCollision(deltaTime, gameObject);
 
-            var isAnEnemy = gameObject instanceof Enemy;
-
-            if (isAnEnemy) {
+            if (gameObject instanceof Enemy) {
 
                 var actualEnemy = ((Enemy) gameObject);
 
-                if (player.bounds.overlaps(gameObject.bounds))
+                if (player.bounds.overlaps(actualEnemy.bounds))
                     actualEnemy.setToDestroy = true;
 
-                player.checkBulletCollision(actualEnemy);
+                player.hasBulletCollide(actualEnemy);
             }
         }
 
