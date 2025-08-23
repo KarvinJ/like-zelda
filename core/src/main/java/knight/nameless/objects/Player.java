@@ -7,20 +7,25 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.Iterator;
 
 public class Player extends GameObject {
+    private enum DirectionState {UP, DOWN, LEFT, RIGHT}
+
+    private DirectionState actualDirection = DirectionState.UP;
 
     private enum AnimationState {FALLING, JUMPING, STANDING, RUNNING}
+
     private AnimationState previousState = AnimationState.STANDING;
     private final TextureRegion jumpingRegion;
     private final Animation<TextureRegion> standingAnimation;
     private final Animation<TextureRegion> runningAnimation;
     private float animationTimer = 0;
     private boolean isMovingRight = false;
-    private final Array<Rectangle> bullets = new Array<>();
+    private final Array<Bullet> bullets = new Array<>();
 
     public Player(Rectangle bounds, TextureAtlas atlas) {
         super(
@@ -38,17 +43,25 @@ public class Player extends GameObject {
 
         actualRegion = getAnimationRegion(deltaTime);
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W))
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+
             velocity.y += speed;
+            actualDirection = DirectionState.UP;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
 
-        else if (Gdx.input.isKeyPressed(Input.Keys.S))
             velocity.y -= speed;
+            actualDirection = DirectionState.DOWN;
+        }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.D))
+        else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+
             velocity.x += speed;
+            actualDirection = DirectionState.RIGHT;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 
-        else if (Gdx.input.isKeyPressed(Input.Keys.A))
             velocity.x -= speed;
+            actualDirection = DirectionState.LEFT;
+        }
 
         velocity.x *= 0.9f;
         velocity.y *= 0.9f;
@@ -59,28 +72,53 @@ public class Player extends GameObject {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
             shootBullet();
 
-        for (var bullet :bullets) {
-
-            bullet.x += 500 * deltaTime;
-//            bullet.y += speed * deltaTime;
+        for (var bullet : bullets) {
+            
+            bullet.update(deltaTime);
         }
-    }
-
-    @Override
-    public void draw(ShapeRenderer shapeRenderer) {
-
-        for (var bullet :bullets) {
-
-            shapeRenderer.rect(bullet.x, bullet.y, bullet.width, bullet.height);
-        }
-
-        super.draw(shapeRenderer);
     }
 
     private void shootBullet() {
 
-        var bulletBounds = new Rectangle(bounds.x, bounds.y, 8, 8);
-        bullets.add(bulletBounds);
+        if (actualDirection == DirectionState.UP) {
+
+            var bulletBounds = new Rectangle(bounds.x, bounds.y + 10, 8, 8);
+            var bullet = new Bullet(bulletBounds, new Vector2(0, 1));
+            bullets.add(bullet);
+        }
+
+        else if (actualDirection == DirectionState.DOWN) {
+
+            var bulletBounds = new Rectangle(bounds.x, bounds.y -10, 8, 8);
+            var bullet = new Bullet(bulletBounds, new Vector2(0, -1));
+            bullets.add(bullet);
+        }
+
+        else if (actualDirection == DirectionState.LEFT) {
+
+            var bulletBounds = new Rectangle(bounds.x - 10, bounds.y, 8, 8);
+            var bullet = new Bullet(bulletBounds, new Vector2(-1, 0));
+            bullets.add(bullet);
+        }
+
+        else if (actualDirection == DirectionState.RIGHT) {
+
+            var bulletBounds = new Rectangle(bounds.x + 10, bounds.y, 8, 8);
+            var bullet = new Bullet(bulletBounds, new Vector2(1, 0));
+            bullets.add(bullet);
+        }
+    }
+
+
+    @Override
+    public void draw(ShapeRenderer shapeRenderer) {
+
+        for (var bullet : bullets) {
+
+            shapeRenderer.rect(bullet.bounds.x, bullet.bounds.y, bullet.bounds.width, bullet.bounds.height);
+        }
+
+        super.draw(shapeRenderer);
     }
 
     private AnimationState getPlayerCurrentState() {
@@ -135,11 +173,11 @@ public class Player extends GameObject {
         if (enemy.isDestroyed)
             return;
 
-        for (Iterator<Rectangle> iterator = bullets.iterator(); iterator.hasNext();) {
+        for (Iterator<Bullet> iterator = bullets.iterator(); iterator.hasNext(); ) {
 
-            Rectangle bullet = iterator.next();
+            var bullet = iterator.next();
 
-            if (bullet.overlaps(enemy.bounds)) {
+            if (bullet.bounds.overlaps(enemy.bounds)) {
 
                 enemy.setToDestroy = true;
                 iterator.remove();
@@ -149,11 +187,11 @@ public class Player extends GameObject {
 
     public void hasBulletCollide(Rectangle structureBounds) {
 
-        for (Iterator<Rectangle> iterator = bullets.iterator(); iterator.hasNext();) {
+        for (Iterator<Bullet> iterator = bullets.iterator(); iterator.hasNext(); ) {
 
-            Rectangle bullet = iterator.next();
+            var bullet = iterator.next();
 
-            if (bullet.overlaps(structureBounds))
+            if (bullet.bounds.overlaps(structureBounds))
                 iterator.remove();
         }
     }
