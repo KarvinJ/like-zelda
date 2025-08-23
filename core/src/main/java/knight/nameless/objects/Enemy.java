@@ -42,16 +42,17 @@ public class Enemy extends GameObject {
 
             actualRegion = runningAnimation.getKeyFrame(stateTimer, true);
 
-            if (isMovingRight && velocity.x <= 4)
-                velocity.x += speed * deltaTime;
+            if (isMovingRight && velocity.x <= 100)
+                velocity.x += speed;
 
-            else if (!isMovingRight && velocity.x >= -4)
-                velocity.x -= speed * deltaTime;
+            else if (!isMovingRight && velocity.x >= -100)
+                velocity.x -= speed;
 
             velocity.x *= 0.9f;
+            velocity.y *= 0.9f;
 
-            bounds.y += velocity.y;
-            bounds.x += velocity.x;
+            bounds.x += velocity.x * deltaTime;
+            bounds.y += velocity.y * deltaTime;
         }
     }
 
