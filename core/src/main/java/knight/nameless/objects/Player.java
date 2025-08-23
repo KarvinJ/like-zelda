@@ -23,6 +23,7 @@ public class Player extends GameObject {
     private boolean isMovingRight = false;
     private final Array<Bullet> bullets = new Array<>();
 
+
     public Player(Rectangle bounds, TextureAtlas atlas) {
         super(
             bounds,
@@ -159,8 +160,12 @@ public class Player extends GameObject {
 
             if (bullet.bounds.overlaps(enemy.bounds)) {
 
-                enemy.setToDestroy = true;
                 iterator.remove();
+                enemy.health--;
+
+                if (enemy.health == 0)
+                    enemy.setToDestroy = true;
+
                 return;
             }
         }

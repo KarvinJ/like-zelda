@@ -14,6 +14,7 @@ public class Enemy extends GameObject {
     public boolean isMovingRight;
     public boolean setToDestroy;
     public boolean isDestroyed;
+    public int health = 5;
 
     public Enemy(Rectangle bounds, TextureAtlas atlas) {
         super(
