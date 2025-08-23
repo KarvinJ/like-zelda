@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 import knight.nameless.objects.Enemy;
+import knight.nameless.objects.EnemyType;
 import knight.nameless.objects.GameObject;
 import knight.nameless.objects.Player;
 
@@ -77,8 +78,13 @@ public class Like extends ApplicationAdapter {
 
             Rectangle objectBounds = ((RectangleMapObject) mapObject).getRectangle();
 
-            if (layerName.equals("Enemies"))
-                gameObjects.add(new Enemy(objectBounds, atlas));
+            if (layerName.equals("Enemies")) {
+
+                if (mapObject.getName().equals("PATROLLER"))
+                    gameObjects.add(new Enemy(objectBounds, atlas, EnemyType.PATROLLER));
+                else if (mapObject.getName().equals("FOLLOWER"))
+                    gameObjects.add(new Enemy(objectBounds, atlas, EnemyType.FOLLOWER));
+            }
             else
                 collisionBounds.add(objectBounds);
         }
