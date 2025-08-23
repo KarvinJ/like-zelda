@@ -13,8 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import java.util.Iterator;
 
 public class Player extends GameObject {
-    private enum DirectionState {UP, DOWN, LEFT, RIGHT}
-    private DirectionState actualDirection = DirectionState.UP;
+    
     private enum AnimationState {FALLING, JUMPING, STANDING, RUNNING}
     private AnimationState previousState = AnimationState.STANDING;
     private final TextureRegion jumpingRegion;
@@ -40,25 +39,17 @@ public class Player extends GameObject {
 
         actualRegion = getAnimationRegion(deltaTime);
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-
+        if (Gdx.input.isKeyPressed(Input.Keys.W))
             velocity.y += speed;
-            actualDirection = DirectionState.UP;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
 
+        else if (Gdx.input.isKeyPressed(Input.Keys.S))
             velocity.y -= speed;
-            actualDirection = DirectionState.DOWN;
-        }
 
-        else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-
+        else if (Gdx.input.isKeyPressed(Input.Keys.D))
             velocity.x += speed;
-            actualDirection = DirectionState.RIGHT;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 
+        else if (Gdx.input.isKeyPressed(Input.Keys.A))
             velocity.x -= speed;
-            actualDirection = DirectionState.LEFT;
-        }
 
         velocity.x *= 0.9f;
         velocity.y *= 0.9f;
@@ -66,8 +57,7 @@ public class Player extends GameObject {
         bounds.x += velocity.x * deltaTime;
         bounds.y += velocity.y * deltaTime;
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
-            shootBullet();
+        shootBulletByDirection();
 
         for (var bullet : bullets) {
 
@@ -75,37 +65,30 @@ public class Player extends GameObject {
         }
     }
 
-    private void shootBullet() {
+    private void shootBulletByDirection() {
 
-        if (actualDirection == DirectionState.UP) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
 
             var bulletBounds = new Rectangle(bounds.x, bounds.y + 10, 8, 8);
             var bullet = new Bullet(bulletBounds, new Vector2(0, 1));
             bullets.add(bullet);
-        }
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
 
-        else if (actualDirection == DirectionState.DOWN) {
-
-            var bulletBounds = new Rectangle(bounds.x, bounds.y -10, 8, 8);
+            var bulletBounds = new Rectangle(bounds.x, bounds.y - 10, 8, 8);
             var bullet = new Bullet(bulletBounds, new Vector2(0, -1));
             bullets.add(bullet);
-        }
-
-        else if (actualDirection == DirectionState.LEFT) {
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
 
             var bulletBounds = new Rectangle(bounds.x - 10, bounds.y, 8, 8);
             var bullet = new Bullet(bulletBounds, new Vector2(-1, 0));
             bullets.add(bullet);
-        }
-
-        else if (actualDirection == DirectionState.RIGHT) {
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
 
             var bulletBounds = new Rectangle(bounds.x + 10, bounds.y, 8, 8);
             var bullet = new Bullet(bulletBounds, new Vector2(1, 0));
             bullets.add(bullet);
         }
     }
-
 
     @Override
     public void draw(ShapeRenderer shapeRenderer) {
@@ -178,6 +161,7 @@ public class Player extends GameObject {
 
                 enemy.setToDestroy = true;
                 iterator.remove();
+                return;
             }
         }
     }
@@ -188,8 +172,11 @@ public class Player extends GameObject {
 
             var bullet = iterator.next();
 
-            if (bullet.bounds.overlaps(structureBounds))
+            if (bullet.bounds.overlaps(structureBounds)) {
+
                 iterator.remove();
+                return;
+            }
         }
     }
 
