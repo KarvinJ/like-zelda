@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Enemy extends GameObject {
@@ -11,7 +12,7 @@ public class Enemy extends GameObject {
     private final Animation<TextureRegion> runningAnimation;
     private float stateTimer;
     public boolean isMovingRight;
-    private boolean setToDestroy;
+    public boolean setToDestroy;
     private boolean isDestroyed;
 
     public Enemy(Rectangle bounds, TextureAtlas atlas) {
@@ -61,6 +62,13 @@ public class Enemy extends GameObject {
 
         if (!isDestroyed || stateTimer < 1)
             super.draw(batch);
+    }
+
+    @Override
+    public void draw(ShapeRenderer shapeRenderer) {
+
+        if (!isDestroyed || stateTimer < 1)
+            super.draw(shapeRenderer);
     }
 
     public void changeDirection(){

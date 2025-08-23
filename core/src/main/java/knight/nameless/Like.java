@@ -30,17 +30,17 @@ public class Like extends ApplicationAdapter {
 
     private final int SCREEN_WIDTH = 640;
     private final int SCREEN_HEIGHT = 360;
-    private ShapeRenderer shapeRenderer;
     private final OrthographicCamera camera = new OrthographicCamera();
+    private ShapeRenderer shapeRenderer;
     private ExtendViewport viewport;
     private Player player;
     private TextureAtlas atlas;
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
     private final Array<Rectangle> collisionBounds = new Array<>();
+    private final Array<GameObject> gameObjects = new Array<>();
     private boolean isDebugRenderer = true;
     private boolean isDebugCamera = false;
-    private final Array<GameObject> gameObjects = new Array<>();
 
     @Override
     public void create() {
@@ -115,7 +115,6 @@ public class Like extends ApplicationAdapter {
                         gameObject.velocity.y = 0;
 
                         var isPlayer = gameObject instanceof Player;
-
                         if (isPlayer && player.velocity.y == 0 && Gdx.input.isKeyPressed(Input.Keys.SPACE))
                             player.velocity.y = 800 * deltaTime;
                     }
@@ -136,9 +135,7 @@ public class Like extends ApplicationAdapter {
 
                     gameObject.velocity.x = 0;
 
-                    var isEnemy = gameObject instanceof Enemy;
-
-                    if (isEnemy)
+                    if (gameObject instanceof Enemy)
                         ((Enemy) gameObject).changeDirection();
                 }
             }
@@ -200,6 +197,9 @@ public class Like extends ApplicationAdapter {
 
             gameObject.update(deltaTime);
             manageStructureCollision(deltaTime, gameObject);
+
+            if (gameObject instanceof Enemy && player.bounds.overlaps(gameObject.bounds))
+                ((Enemy) gameObject).setToDestroy = true;
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F2))
