@@ -14,11 +14,8 @@ import java.util.Iterator;
 
 public class Player extends GameObject {
     private enum DirectionState {UP, DOWN, LEFT, RIGHT}
-
     private DirectionState actualDirection = DirectionState.UP;
-
     private enum AnimationState {FALLING, JUMPING, STANDING, RUNNING}
-
     private AnimationState previousState = AnimationState.STANDING;
     private final TextureRegion jumpingRegion;
     private final Animation<TextureRegion> standingAnimation;
@@ -73,7 +70,7 @@ public class Player extends GameObject {
             shootBullet();
 
         for (var bullet : bullets) {
-            
+
             bullet.update(deltaTime);
         }
     }
