@@ -1,5 +1,6 @@
 package knight.nameless.objects;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -18,5 +19,10 @@ public class Bullet {
 
         bounds.x += speed * velocity.x * deltaTime;
         bounds.y += speed * velocity.y * deltaTime;
+    }
+
+    public void draw(ShapeRenderer shapeRenderer) {
+
+        shapeRenderer.rect(bounds.x, bounds.y, bounds.width, bounds.height);
     }
 }

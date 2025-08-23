@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import java.util.Iterator;
 
 public class Player extends GameObject {
-    
+
     private enum AnimationState {FALLING, JUMPING, STANDING, RUNNING}
     private AnimationState previousState = AnimationState.STANDING;
     private final TextureRegion jumpingRegion;
@@ -95,7 +95,7 @@ public class Player extends GameObject {
 
         for (var bullet : bullets) {
 
-            shapeRenderer.rect(bullet.bounds.x, bullet.bounds.y, bullet.bounds.width, bullet.bounds.height);
+            bullet.draw(shapeRenderer);
         }
 
         super.draw(shapeRenderer);
