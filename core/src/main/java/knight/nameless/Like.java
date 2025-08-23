@@ -236,11 +236,9 @@ public class Like extends ApplicationAdapter {
     void draw() {
 
         mapRenderer.setView(camera);
-
         mapRenderer.render();
-
+        
         mapRenderer.getBatch().setProjectionMatrix(viewport.getCamera().combined);
-
         mapRenderer.getBatch().begin();
 
         for (GameObject gameObject : gameObjects) {
