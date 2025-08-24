@@ -36,7 +36,6 @@ public class Like extends ApplicationAdapter {
     private ExtendViewport viewport;
     private Player player;
     private TextureAtlas atlas;
-    private TextureAtlas atlas2;
     private TextureRegion arrowRegion;
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
@@ -55,11 +54,10 @@ public class Like extends ApplicationAdapter {
 
         shapeRenderer = new ShapeRenderer();
 
-        atlas = new TextureAtlas("images/sprites.atlas");
-        atlas2 = new TextureAtlas("images/zink.atlas");
+        atlas = new TextureAtlas("images/zink.atlas");
 
-        arrowRegion = atlas2.findRegion("sprWeaponArrow");
-        player = new Player(new Rectangle(300, 100, 48, 48), atlas2);
+        arrowRegion = atlas.findRegion("sprWeaponArrow");
+        player = new Player(new Rectangle(300, 100, 48, 48), atlas);
 
         gameObjects.add(player);
 

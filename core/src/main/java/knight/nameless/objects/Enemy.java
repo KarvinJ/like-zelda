@@ -1,5 +1,7 @@
 package knight.nameless.objects;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -10,8 +12,12 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Enemy extends GameObject {
     private final EnemyType actualType;
-    private final Animation<TextureRegion> runningAnimation;
-    private float stateTimer;
+    private AnimationState previousState = AnimationState.UP;
+    private final Animation<TextureRegion> movingUpAnimations;
+    private final Animation<TextureRegion> movingDownAnimations;
+    private final Animation<TextureRegion> movingRightAnimations;
+    private final Animation<TextureRegion> movingLeftAnimations;
+    private float animationTimer;
     public boolean isMovingRight;
     public boolean isActive;
     public boolean setToDestroy;
@@ -21,37 +27,92 @@ public class Enemy extends GameObject {
     public Enemy(Rectangle bounds, TextureAtlas atlas, EnemyType enemyType) {
         super(
             bounds,
-            new TextureRegion(atlas.findRegion("Run-Enemy"), 0, 0, 32, 32),
+            new TextureRegion(atlas.findRegion("sprSwordKnightS"), 0, 0, 32, 32),
             50
         );
 
         actualType = enemyType;
 
         isMovingRight = true;
-        runningAnimation = makeAnimationByTotalFrames(atlas.findRegion("Run-Enemy"), 10);
+        movingUpAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprSwordKnightN"), 2);
+        movingDownAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprSwordKnightS"), 2);
+        movingRightAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprSwordKnightE"), 2);
+        movingLeftAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprSwordKnightW"), 2);
     }
 
     private void destroyEnemy() {
 
         isDestroyed = true;
-        stateTimer = 0;
+        animationTimer = 0;
     }
 
     @Override
     protected void childUpdate(float deltaTime) {
 
-        stateTimer += deltaTime;
+        animationTimer += deltaTime;
 
         if (setToDestroy && !isDestroyed)
             destroyEnemy();
 
         else if (!isDestroyed) {
 
-            actualRegion = runningAnimation.getKeyFrame(stateTimer, true);
+            actualRegion = getAnimationRegion(deltaTime);
 
             if (actualType == EnemyType.PATROLLER)
                 patrolEnemy(deltaTime);
         }
+    }
+
+    private AnimationState getCurrentState() {
+
+        if (velocity.y > 0)
+            return AnimationState.UP;
+
+        else if (velocity.y < 0)
+            return AnimationState.DOWN;
+
+        else if (velocity.x < 0)
+            return AnimationState.LEFT;
+
+        else if (velocity.x > 0)
+            return AnimationState.RIGHT;
+
+        else
+            return AnimationState.STANDING;
+    }
+
+    private TextureRegion getAnimationRegion(float deltaTime) {
+
+        AnimationState actualState = getCurrentState();
+
+        TextureRegion region;
+
+        switch (actualState) {
+
+            case UP:
+                region = movingUpAnimations.getKeyFrame(animationTimer, true);
+                break;
+
+            case DOWN:
+                region = movingDownAnimations.getKeyFrame(animationTimer, true);
+                break;
+
+            case LEFT:
+                region = movingLeftAnimations.getKeyFrame(animationTimer, true);
+                break;
+
+            case RIGHT:
+                region = movingRightAnimations.getKeyFrame(animationTimer, true);
+                break;
+
+            default:
+                region = idleRegion;
+        }
+
+        animationTimer = actualState == previousState ? animationTimer + deltaTime : 0;
+        previousState = actualState;
+
+        return region;
     }
 
     private void patrolEnemy(float deltaTime) {
@@ -72,14 +133,14 @@ public class Enemy extends GameObject {
     @Override
     public void draw(Batch batch) {
 
-        if (!isDestroyed || stateTimer < 1)
+        if (!isDestroyed || animationTimer < 1)
             super.draw(batch);
     }
 
     @Override
     public void draw(ShapeRenderer shapeRenderer) {
 
-        if (!isDestroyed || stateTimer < 1)
+        if (!isDestroyed || animationTimer < 1)
             super.draw(shapeRenderer);
     }
 

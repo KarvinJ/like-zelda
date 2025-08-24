@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Player extends GameObject {
 
-    private enum AnimationState {RIGHT, LEFT, UP, DOWN, STANDING}
     private AnimationState previousState = AnimationState.UP;
     private final Animation<TextureRegion> movingUpAnimations;
     private final Animation<TextureRegion> movingDownAnimations;
@@ -55,7 +54,7 @@ public class Player extends GameObject {
         bounds.y += velocity.y * deltaTime;
     }
 
-    private AnimationState getPlayerCurrentState() {
+    private AnimationState getCurrentAnimationState() {
 
         if (Gdx.input.isKeyPressed(Input.Keys.W))
             return AnimationState.UP;
@@ -75,14 +74,14 @@ public class Player extends GameObject {
 
     private TextureRegion getAnimationRegion(float deltaTime) {
 
-        AnimationState actualState = getPlayerCurrentState();
+        AnimationState actualState = getCurrentAnimationState();
 
         TextureRegion region;
 
         switch (actualState) {
 
             case UP:
-                region = movingUpAnimations.getKeyFrame(animationTimer, true);;
+                region = movingUpAnimations.getKeyFrame(animationTimer, true);
                 break;
 
             case DOWN:
