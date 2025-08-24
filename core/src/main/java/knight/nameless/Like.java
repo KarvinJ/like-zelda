@@ -11,7 +11,6 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -31,6 +30,7 @@ public class Like extends ApplicationAdapter {
     private final int SCREEN_WIDTH = 640;
     private final int SCREEN_HEIGHT = 360;
     private final OrthographicCamera camera = new OrthographicCamera();
+    private Rectangle cameraBounds;
     private ShapeRenderer shapeRenderer;
     private ExtendViewport viewport;
     private Player player;
@@ -48,6 +48,7 @@ public class Like extends ApplicationAdapter {
 
         camera.position.set(SCREEN_WIDTH / 2f, SCREEN_HEIGHT / 2f, 0);
         viewport = new ExtendViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
+        cameraBounds = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
         shapeRenderer = new ShapeRenderer();
 
@@ -198,34 +199,6 @@ public class Like extends ApplicationAdapter {
             camera.zoom -= 0.2f;
     }
 
-    public boolean isPlayerXPositionInsideMapBounds(Vector2 playerPosition) {
-
-        MapProperties properties = tiledMap.getProperties();
-
-        int mapWidth = properties.get("width", Integer.class);
-        int tilePixelWidth = properties.get("tilewidth", Integer.class);
-
-        int mapPixelWidth = mapWidth * tilePixelWidth;
-
-        var midScreenWidth = SCREEN_WIDTH / 2f;
-
-        return playerPosition.x > midScreenWidth && playerPosition.x < mapPixelWidth - midScreenWidth;
-    }
-
-    public boolean isPlayerYPositionInsideMapBounds(Vector2 playerPosition) {
-
-        var properties = tiledMap.getProperties();
-
-        int mapHeight = properties.get("height", Integer.class);
-        int tilePixelHeight = properties.get("tileheight", Integer.class);
-
-        int mapPixelHeight = mapHeight * tilePixelHeight;
-
-        var midScreenHeight = SCREEN_HEIGHT / 2f;
-
-        return playerPosition.y > midScreenHeight && playerPosition.y < mapPixelHeight - midScreenHeight;
-    }
-
     private void shootBulletByDirection() {
 
         var playerPosition = player.getActualPosition();
@@ -289,15 +262,35 @@ public class Like extends ApplicationAdapter {
             controlCameraPosition(camera);
         else {
 
-            var playerPosition = new Vector2(player.bounds.x, player.bounds.y);
+            var playerPosition = player.getActualPosition();
 
-            var isPlayerXPositionInsideMapBounds = isPlayerXPositionInsideMapBounds(playerPosition);
-//            var isPlayerYPositionInsideMapBounds = isPlayerYPositionInsideMapBounds(playerPosition);
+            if (playerPosition.x > cameraBounds.x + cameraBounds.width) {
 
-            if (isPlayerXPositionInsideMapBounds)
-                camera.position.set(playerPosition, 0);
-            else
-                camera.position.set(camera.position.x, playerPosition.y, 0);
+                var cameraXPosition = playerPosition.x + cameraBounds.width / 2;
+                cameraBounds.x += cameraBounds.width;
+                camera.position.set(new Vector2(cameraXPosition, camera.position.y), 0);
+            }
+
+            else if (playerPosition.x < cameraBounds.x) {
+
+                var cameraXPosition = playerPosition.x - cameraBounds.width / 2;
+                cameraBounds.x -= cameraBounds.width;
+                camera.position.set(new Vector2(cameraXPosition, camera.position.y), 0);
+            }
+
+             else if (playerPosition.y > cameraBounds.y + cameraBounds.height) {
+
+                var cameraYPosition = playerPosition.y + cameraBounds.height / 2;
+                cameraBounds.y += cameraBounds.height;
+                camera.position.set(new Vector2(camera.position.x, cameraYPosition), 0);
+            }
+
+            else if (playerPosition.y < cameraBounds.y) {
+
+                var cameraYPosition = playerPosition.y - cameraBounds.height / 2;
+                cameraBounds.y -= cameraBounds.height;
+                camera.position.set(new Vector2(camera.position.x, cameraYPosition), 0);
+            }
         }
 
         camera.update();
@@ -347,6 +340,9 @@ public class Like extends ApplicationAdapter {
 
             shapeRenderer.rect(structure.x, structure.y, structure.width, structure.height);
         }
+
+        shapeRenderer.setColor(Color.GOLD);
+        shapeRenderer.rect(cameraBounds.x, cameraBounds.y, cameraBounds.width, cameraBounds.height);
 
         shapeRenderer.setColor(Color.RED);
         for (var bullet : bullets) {
