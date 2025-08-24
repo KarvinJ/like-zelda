@@ -25,7 +25,7 @@ public class Enemy extends GameObject {
             bounds,
             new TextureRegion(atlas.findRegion("sprSwordKnightS"), 0, 0, 32, 32),
             50,
-            5
+            4
         );
 
         actualType = enemyType;
