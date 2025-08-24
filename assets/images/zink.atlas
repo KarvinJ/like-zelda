@@ -1,0 +1,13 @@
+zink.png
+size:512,64
+repeat:none
+sprWeaponArrow
+bounds:394,34,64,16
+sprZinkWalkE
+bounds:198,2,96,48
+sprZinkWalkN
+bounds:2,2,96,48
+sprZinkWalkS
+bounds:100,2,96,48
+sprZinkWalkW
+bounds:296,2,96,48
