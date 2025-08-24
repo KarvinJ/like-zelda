@@ -15,6 +15,8 @@ public class Player extends GameObject {
     private final Animation<TextureRegion> movingDownAnimations;
     private final Animation<TextureRegion> movingRightAnimations;
     private final Animation<TextureRegion> movingLeftAnimations;
+    private float deadTimer;
+    public boolean isDead;
 
     public Player(Rectangle bounds, TextureAtlas atlas) {
         super(
@@ -32,6 +34,22 @@ public class Player extends GameObject {
 
     @Override
     protected void childUpdate(float deltaTime) {
+
+        if (health > 0 )
+            movement(deltaTime);
+        else {
+
+            deadTimer += deltaTime;
+
+            if (deadTimer >= 1) {
+
+                isDead = true;
+                deadTimer = 0;
+            }
+        }
+    }
+
+    private void movement(float deltaTime) {
 
         actualRegion = getAnimationRegion(deltaTime);
 
@@ -108,6 +126,9 @@ public class Player extends GameObject {
 
     public void hasCollideWithEnemy(Vector2 enemyPosition) {
 
+        if (health == 0)
+            return;
+
         if (bounds.x < enemyPosition.x)
             bounds.x -= 50;
 
@@ -120,5 +141,11 @@ public class Player extends GameObject {
     public Rectangle getCollisionBounds() {
 
         return new Rectangle(bounds.x, bounds.y, bounds.width / 2, bounds.height / 2);
+    }
+
+    @Override
+    public void resetToInitialState() {
+        isDead = false;
+        super.resetToInitialState();
     }
 }

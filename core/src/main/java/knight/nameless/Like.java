@@ -3,6 +3,8 @@ package knight.nameless;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -26,6 +28,8 @@ import knight.nameless.objects.*;
 
 import java.util.Iterator;
 
+import static knight.nameless.AssetsHelper.loadSound;
+
 public class Like extends ApplicationAdapter {
 
     private final int SCREEN_WIDTH = 640;
@@ -42,6 +46,10 @@ public class Like extends ApplicationAdapter {
     private final Array<Rectangle> collisionBounds = new Array<>();
     private final Array<GameObject> gameObjects = new Array<>();
     private final Array<Bullet> bullets = new Array<>();
+    private Music music;
+    private Sound arrowSound;
+    private Sound hitArrowSound;
+    private Sound deathSound;
     private float shootArrowTimer = 0;
     private boolean isDebugRenderer = false;
     private boolean isDebugCamera = false;
@@ -64,6 +72,15 @@ public class Like extends ApplicationAdapter {
 
         tiledMap = new TmxMapLoader().load("maps/playground/test3.tmx");
         mapRenderer = setupMap(tiledMap);
+
+        music = AssetsHelper.loadMusic("peaceful.wav");
+        music.play();
+        music.setVolume(0.5f);
+        music.setLooping(true);
+
+        arrowSound = loadSound("arrow.wav");
+        hitArrowSound = loadSound("magic.wav");
+        deathSound = loadSound("fall.wav");
     }
 
     public OrthogonalTiledMapRenderer setupMap(TiledMap tiledMap) {
@@ -82,6 +99,8 @@ public class Like extends ApplicationAdapter {
 
         camera.position.set(SCREEN_WIDTH / 2f, SCREEN_HEIGHT / 2f, 0);
         cameraBounds = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+        deathSound.play();
 
         for (GameObject gameObject : gameObjects) {
              gameObject.resetToInitialState();
@@ -147,6 +166,8 @@ public class Like extends ApplicationAdapter {
 
                 if (enemy.health == 0)
                     enemy.setToDestroy = true;
+
+                hitArrowSound.play();
 
                 return;
             }
@@ -238,6 +259,8 @@ public class Like extends ApplicationAdapter {
                 var actualRegion = new TextureRegion(arrowRegion, 48, 0, 16, arrowRegion.getRegionHeight());
                 var bullet = new Bullet(bulletBounds, new Vector2(0, 1), actualRegion);
                 bullets.add(bullet);
+
+                arrowSound.play();
             }
 
 
@@ -253,6 +276,8 @@ public class Like extends ApplicationAdapter {
                 var actualRegion = new TextureRegion(arrowRegion, 16, 0, 16, arrowRegion.getRegionHeight());
                 var bullet = new Bullet(bulletBounds, new Vector2(0, -1), actualRegion);
                 bullets.add(bullet);
+
+                arrowSound.play();
             }
 
         } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
@@ -267,6 +292,8 @@ public class Like extends ApplicationAdapter {
                 var actualRegion = new TextureRegion(arrowRegion, 32, 0, 16, arrowRegion.getRegionHeight());
                 var bullet = new Bullet(bulletBounds, new Vector2(-1, 0), actualRegion);
                 bullets.add(bullet);
+
+                arrowSound.play();
             }
 
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
@@ -281,6 +308,8 @@ public class Like extends ApplicationAdapter {
                 var actualRegion = new TextureRegion(arrowRegion, 0, 0, 16, arrowRegion.getRegionHeight());
                 var bullet = new Bullet(bulletBounds, new Vector2(1, 0), actualRegion);
                 bullets.add(bullet);
+
+                arrowSound.play();
             }
         }
     }
@@ -309,8 +338,7 @@ public class Like extends ApplicationAdapter {
             }
         }
 
-
-        if (player.health == 0)
+        if (player.isDead)
             resetGame();
 
         shootBulletByDirection(deltaTime);
