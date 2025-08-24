@@ -10,24 +10,25 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Player extends GameObject {
 
-    private enum AnimationState {FALLING, JUMPING, STANDING, RUNNING}
-    private AnimationState previousState = AnimationState.STANDING;
-    private final TextureRegion jumpingRegion;
-    private final Animation<TextureRegion> standingAnimation;
-    private final Animation<TextureRegion> runningAnimation;
+    private enum AnimationState {RIGHT, LEFT, UP, DOWN, STANDING}
+    private AnimationState previousState = AnimationState.UP;
+    private final Animation<TextureRegion> movingUpAnimations;
+    private final Animation<TextureRegion> movingDownAnimations;
+    private final Animation<TextureRegion> movingRightAnimations;
+    private final Animation<TextureRegion> movingLeftAnimations;
     private float animationTimer = 0;
-    private boolean isMovingRight = false;
 
     public Player(Rectangle bounds, TextureAtlas atlas) {
         super(
             bounds,
-            new TextureRegion(atlas.findRegion("Idle"), 0, 0, 32, 32),
+            new TextureRegion(atlas.findRegion("sprZinkWalkS"), 0, 0, 48, 48),
             40
         );
 
-        standingAnimation = makeAnimationByTotalFrames(atlas.findRegion("Idle"), 5);
-        jumpingRegion = new TextureRegion(atlas.findRegion("Jump"), 0, 0, 32, 32);
-        runningAnimation = makeAnimationByTotalFrames(atlas.findRegion("Run"), 5);
+        movingUpAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprZinkWalkN"), 2);
+        movingDownAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprZinkWalkS"), 2);
+        movingRightAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprZinkWalkE"), 2);
+        movingLeftAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprZinkWalkW"), 2);
     }
 
     @Override
@@ -56,16 +57,17 @@ public class Player extends GameObject {
 
     private AnimationState getPlayerCurrentState() {
 
-        boolean isPlayerMoving = Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.D);
+        if (Gdx.input.isKeyPressed(Input.Keys.W))
+            return AnimationState.UP;
 
-        if (velocity.y > 0 || (velocity.y < 0 && previousState == AnimationState.JUMPING))
-            return AnimationState.JUMPING;
+        else if (Gdx.input.isKeyPressed(Input.Keys.S))
+            return AnimationState.DOWN;
 
-        else if (isPlayerMoving)
-            return AnimationState.RUNNING;
+        else if (Gdx.input.isKeyPressed(Input.Keys.A))
+            return AnimationState.LEFT;
 
-        else if (velocity.y < 0)
-            return AnimationState.FALLING;
+        else if (Gdx.input.isKeyPressed(Input.Keys.D))
+            return AnimationState.RIGHT;
 
         else
             return AnimationState.STANDING;
@@ -79,21 +81,25 @@ public class Player extends GameObject {
 
         switch (actualState) {
 
-            case JUMPING:
-                region = jumpingRegion;
+            case UP:
+                region = movingUpAnimations.getKeyFrame(animationTimer, true);;
                 break;
 
-            case RUNNING:
-                region = runningAnimation.getKeyFrame(animationTimer, true);
+            case DOWN:
+                region = movingDownAnimations.getKeyFrame(animationTimer, true);
                 break;
 
-            case FALLING:
-            case STANDING:
+            case LEFT:
+                region = movingLeftAnimations.getKeyFrame(animationTimer, true);
+                break;
+
+            case RIGHT:
+                region = movingRightAnimations.getKeyFrame(animationTimer, true);
+                break;
+
             default:
-                region = standingAnimation.getKeyFrame(animationTimer, true);
+                region = idleRegion;
         }
-
-        flipPlayerOnXAxis(region);
 
         animationTimer = actualState == previousState ? animationTimer + deltaTime : 0;
         previousState = actualState;
@@ -108,18 +114,5 @@ public class Player extends GameObject {
 
         else if (bounds.x > enemyPosition.x)
             bounds.x += 50;
-    }
-
-    private void flipPlayerOnXAxis(TextureRegion region) {
-
-        if ((velocity.x < 0 || !isMovingRight) && !region.isFlipX()) {
-
-            region.flip(true, false);
-            isMovingRight = false;
-        } else if ((velocity.x > 0 || isMovingRight) && region.isFlipX()) {
-
-            region.flip(true, false);
-            isMovingRight = true;
-        }
     }
 }

@@ -59,7 +59,7 @@ public class Like extends ApplicationAdapter {
         atlas2 = new TextureAtlas("images/zink.atlas");
 
         arrowRegion = atlas2.findRegion("sprWeaponArrow");
-        player = new Player(new Rectangle(300, 100, 32, 32), atlas);
+        player = new Player(new Rectangle(300, 100, 48, 48), atlas2);
 
         gameObjects.add(player);
 

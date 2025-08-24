@@ -12,6 +12,7 @@ public abstract class GameObject {
 
     public final Rectangle bounds;
     protected TextureRegion actualRegion;
+    protected final TextureRegion idleRegion;
     public final Vector2 velocity = new Vector2(0, 0);
     private final int regionWidth;
     private final int regionHeight;
@@ -24,6 +25,7 @@ public abstract class GameObject {
         regionWidth = region.getRegionWidth();
         regionHeight = region.getRegionHeight();
         this.speed = speed;
+        idleRegion = region;
     }
 
     protected abstract void childUpdate(float deltaTime);
@@ -47,7 +49,7 @@ public abstract class GameObject {
 
         Array<TextureRegion> animationFrames = new Array<>();
 
-        for (int i = 0; i <= totalFrames; i++) {
+        for (int i = 0; i < totalFrames; i++) {
 
             var actualFrame = new TextureRegion(characterRegion, i * regionWidth, 0, regionWidth, regionHeight);
             animationFrames.add(actualFrame);
