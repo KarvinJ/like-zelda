@@ -20,7 +20,8 @@ public class Enemy extends GameObject {
     public Enemy(Rectangle bounds, TextureAtlas atlas, EnemyType enemyType) {
         super(
             bounds,
-            new TextureRegion(atlas.findRegion("Run-Enemy"), 0, 0, 32, 32)
+            new TextureRegion(atlas.findRegion("Run-Enemy"), 0, 0, 32, 32),
+            50
         );
 
         actualType = enemyType;

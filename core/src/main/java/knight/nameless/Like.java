@@ -22,10 +22,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
-import knight.nameless.objects.Enemy;
-import knight.nameless.objects.EnemyType;
-import knight.nameless.objects.GameObject;
-import knight.nameless.objects.Player;
+import knight.nameless.objects.*;
+
+import java.util.Iterator;
 
 public class Like extends ApplicationAdapter {
 
@@ -40,6 +39,7 @@ public class Like extends ApplicationAdapter {
     private OrthogonalTiledMapRenderer mapRenderer;
     private final Array<Rectangle> collisionBounds = new Array<>();
     private final Array<GameObject> gameObjects = new Array<>();
+    private final Array<Bullet> bullets = new Array<>();
     private boolean isDebugRenderer = true;
     private boolean isDebugCamera = false;
 
@@ -107,32 +107,58 @@ public class Like extends ApplicationAdapter {
             && bounds.y < platform.y + platform.height;
     }
 
-    private void manageStructureCollision(float deltaTime, GameObject gameObject) {
+    public void hasBulletCollide(Enemy enemy) {
+
+        if (enemy.isDestroyed)
+            return;
+
+        for (Iterator<Bullet> iterator = bullets.iterator(); iterator.hasNext(); ) {
+
+            var bullet = iterator.next();
+
+            if (bullet.bounds.overlaps(enemy.bounds)) {
+
+                iterator.remove();
+                enemy.health--;
+
+                if (enemy.health == 0)
+                    enemy.setToDestroy = true;
+
+                return;
+            }
+        }
+    }
+
+    public void hasBulletCollide(Rectangle structureBounds) {
+
+        for (Iterator<Bullet> iterator = bullets.iterator(); iterator.hasNext(); ) {
+
+            var bullet = iterator.next();
+
+            if (bullet.bounds.overlaps(structureBounds)) {
+
+                iterator.remove();
+                return;
+            }
+        }
+    }
+
+    private void manageStructureCollision(GameObject gameObject) {
 
         for (var structure : collisionBounds) {
 
-            if (gameObject instanceof Player)
-                player.hasBulletCollide(structure);
+            hasBulletCollide(structure);
 
             if (gameObject.bounds.overlaps(structure)) {
 
                 if (checkCollisionInX(gameObject.getPreviousPosition(), structure)) {
 
-                    if (gameObject.velocity.y < 0) {
-
+                    if (gameObject.velocity.y < 0)
                         gameObject.bounds.y = structure.y + structure.height;
-                        gameObject.velocity.y = 0;
-
-                        var isPlayer = gameObject instanceof Player;
-                        if (isPlayer && player.velocity.y == 0 && Gdx.input.isKeyPressed(Input.Keys.SPACE))
-                            player.velocity.y = 800 * deltaTime;
-                    }
-
-                    else {
-
+                    else
                         gameObject.bounds.y = structure.y - gameObject.bounds.height;
-                        gameObject.velocity.y = 0;
-                    }
+
+                    gameObject.velocity.y = 0;
                 }
                 else if (checkCollisionInY(gameObject.getPreviousPosition(), structure)) {
 
@@ -200,12 +226,39 @@ public class Like extends ApplicationAdapter {
         return playerPosition.y > midScreenHeight && playerPosition.y < mapPixelHeight - midScreenHeight;
     }
 
+    private void shootBulletByDirection() {
+
+        var playerPosition = player.getActualPosition();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+
+            var bulletBounds = new Rectangle(playerPosition.x, playerPosition.y + 10, 8, 8);
+            var bullet = new Bullet(bulletBounds, new Vector2(0, 1));
+            bullets.add(bullet);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+
+            var bulletBounds = new Rectangle(playerPosition.x, playerPosition.y - 10, 8, 8);
+            var bullet = new Bullet(bulletBounds, new Vector2(0, -1));
+            bullets.add(bullet);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+
+            var bulletBounds = new Rectangle(playerPosition.x - 10, playerPosition.y, 8, 8);
+            var bullet = new Bullet(bulletBounds, new Vector2(-1, 0));
+            bullets.add(bullet);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+
+            var bulletBounds = new Rectangle(playerPosition.x + 10, playerPosition.y, 8, 8);
+            var bullet = new Bullet(bulletBounds, new Vector2(1, 0));
+            bullets.add(bullet);
+        }
+    }
+
     private void update(float deltaTime) {
 
         for (GameObject gameObject : gameObjects) {
 
             gameObject.update(deltaTime);
-            manageStructureCollision(deltaTime, gameObject);
+            manageStructureCollision(gameObject);
 
             if (gameObject instanceof Enemy) {
 
@@ -214,10 +267,17 @@ public class Like extends ApplicationAdapter {
                 if (player.bounds.overlaps(actualEnemy.bounds))
                     actualEnemy.setToDestroy = true;
 
-                player.hasBulletCollide(actualEnemy);
+                hasBulletCollide(actualEnemy);
 
                 actualEnemy.followThePlayer(deltaTime, player.getActualPosition());
             }
+        }
+
+        shootBulletByDirection();
+
+        for (var bullet : bullets) {
+
+            bullet.update(deltaTime);
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F2))
@@ -281,14 +341,18 @@ public class Like extends ApplicationAdapter {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
         shapeRenderer.setColor(Color.GREEN);
-
         for (var structure : collisionBounds) {
 
             shapeRenderer.rect(structure.x, structure.y, structure.width, structure.height);
         }
 
-        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.setColor(Color.RED);
+        for (var bullet : bullets) {
 
+            bullet.draw(shapeRenderer);
+        }
+
+        shapeRenderer.setColor(Color.WHITE);
         for (var gameObject : gameObjects) {
 
             gameObject.draw(shapeRenderer);

@@ -15,14 +15,15 @@ public abstract class GameObject {
     public final Vector2 velocity = new Vector2(0, 0);
     private final int regionWidth;
     private final int regionHeight;
-    public final int speed = 50;
+    public final int speed;
 
-    protected GameObject(Rectangle bounds, TextureRegion region) {
+    protected GameObject(Rectangle bounds, TextureRegion region, int speed) {
 
         this.bounds = bounds;
         actualRegion = region;
         regionWidth = region.getRegionWidth();
         regionHeight = region.getRegionHeight();
+        this.speed = speed;
     }
 
     protected abstract void childUpdate(float deltaTime);
