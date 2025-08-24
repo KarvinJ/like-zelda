@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
@@ -35,6 +36,8 @@ public class Like extends ApplicationAdapter {
     private ExtendViewport viewport;
     private Player player;
     private TextureAtlas atlas;
+    private TextureAtlas atlas2;
+    private TextureRegion arrowRegion;
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
     private final Array<Rectangle> collisionBounds = new Array<>();
@@ -53,6 +56,9 @@ public class Like extends ApplicationAdapter {
         shapeRenderer = new ShapeRenderer();
 
         atlas = new TextureAtlas("images/sprites.atlas");
+        atlas2 = new TextureAtlas("images/zink.atlas");
+
+        arrowRegion = atlas2.findRegion("sprWeaponArrow");
         player = new Player(new Rectangle(300, 100, 32, 32), atlas);
 
         gameObjects.add(player);
@@ -212,22 +218,27 @@ public class Like extends ApplicationAdapter {
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
 
             var bulletBounds = new Rectangle(playerPosition.x, playerPosition.y + 10, 8, 8);
-            var bullet = new Bullet(bulletBounds, new Vector2(0, 1));
+            var actualRegion = new TextureRegion(arrowRegion, 16, 0, 16, arrowRegion.getRegionHeight());
+            var bullet = new Bullet(bulletBounds, new Vector2(0, 1), actualRegion);
             bullets.add(bullet);
+
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
 
             var bulletBounds = new Rectangle(playerPosition.x, playerPosition.y - 10, 8, 8);
-            var bullet = new Bullet(bulletBounds, new Vector2(0, -1));
+            var actualRegion = new TextureRegion(arrowRegion, 48, 0, 16, arrowRegion.getRegionHeight());
+            var bullet = new Bullet(bulletBounds, new Vector2(0, -1), actualRegion);
             bullets.add(bullet);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
 
             var bulletBounds = new Rectangle(playerPosition.x - 10, playerPosition.y, 8, 8);
-            var bullet = new Bullet(bulletBounds, new Vector2(-1, 0));
+            var actualRegion = new TextureRegion(arrowRegion, 32, 0, 16, arrowRegion.getRegionHeight());
+            var bullet = new Bullet(bulletBounds, new Vector2(-1, 0), actualRegion);
             bullets.add(bullet);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
 
             var bulletBounds = new Rectangle(playerPosition.x + 10, playerPosition.y, 8, 8);
-            var bullet = new Bullet(bulletBounds, new Vector2(1, 0));
+            var actualRegion = new TextureRegion(arrowRegion, 0, 0, 16, arrowRegion.getRegionHeight());
+            var bullet = new Bullet(bulletBounds, new Vector2(1, 0), actualRegion);
             bullets.add(bullet);
         }
     }
@@ -315,6 +326,11 @@ public class Like extends ApplicationAdapter {
         for (GameObject gameObject : gameObjects) {
 
             gameObject.draw(mapRenderer.getBatch());
+        }
+
+        for (var bullet : bullets) {
+
+            bullet.draw(mapRenderer.getBatch());
         }
 
         mapRenderer.getBatch().end();
