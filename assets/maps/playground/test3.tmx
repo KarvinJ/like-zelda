@@ -23,12 +23,12 @@
   <object id="163" x="1664.39" y="543.464" width="495.658" height="32.1667"/>
   <object id="70" x="1006.39" y="544.797" width="272.991" height="31.5"/>
   <object id="162" x="2303.06" y="543.464" width="257.658" height="31.5"/>
-  <object id="26" x="607.048" y="911.175" width="33.974" height="367.491"/>
+  <object id="26" x="607.048" y="911.175" width="47.974" height="367.491"/>
   <object id="157" x="1888.71" y="909.842" width="31.974" height="367.491"/>
   <object id="77" x="1246.05" y="912.175" width="33.474" height="158.158"/>
   <object id="177" x="1250.05" y="1152.84" width="33.474" height="126.824"/>
   <object id="154" x="2528.22" y="910.842" width="32.474" height="367.491"/>
-  <object id="47" x="605.048" y="545.675" width="33.474" height="367.491"/>
+  <object id="47" x="605.048" y="545.675" width="51.474" height="367.491"/>
   <object id="159" x="1889.71" y="544.342" width="33.474" height="367.491"/>
   <object id="78" x="1247.05" y="546.675" width="33.474" height="367.491"/>
   <object id="158" x="2528.72" y="545.342" width="31.8073" height="367.491"/>
@@ -50,7 +50,7 @@
   <object id="185" x="2466" y="1190" width="12.6667" height="9.66667"/>
  </objectgroup>
  <objectgroup id="5" name="Enemies">
-  <object id="72" name="PATROLLER" x="644" y="680.666" width="32" height="32"/>
+  <object id="72" name="PATROLLER" x="663.333" y="680.666" width="32" height="32"/>
   <object id="145" name="PATROLLER" x="1928.67" y="679.333" width="32" height="32"/>
   <object id="182" name="PATROLLER" x="1923.67" y="992.333" width="32" height="32"/>
   <object id="183" name="PATROLLER" x="2492.67" y="1076.83" width="32" height="32"/>
@@ -58,7 +58,7 @@
   <object id="146" name="PATROLLER" x="1824.17" y="592.334" width="32" height="32"/>
   <object id="175" name="PATROLLER" x="1566.67" y="719.334" width="32" height="32"/>
   <object id="184" name="PATROLLER" x="1318.67" y="433.334" width="32" height="32"/>
-  <object id="179" name="PATROLLER" x="1312.67" y="769.834" width="32" height="32"/>
+  <object id="179" name="PATROLLER" x="1324" y="770.5" width="32" height="32"/>
   <object id="73" name="PATROLLER" x="1214.33" y="817" width="32" height="32"/>
   <object id="144" name="PATROLLER" x="2494.5" y="815.667" width="32" height="32"/>
   <object id="71" name="PATROLLER" x="644" y="423" width="32" height="32"/>

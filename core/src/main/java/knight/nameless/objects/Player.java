@@ -129,12 +129,6 @@ public class Player extends GameObject {
         if (health == 0)
             return;
 
-        if (bounds.x < enemyPosition.x)
-            bounds.x -= 50;
-
-        else if (bounds.x > enemyPosition.x)
-            bounds.x += 50;
-
         health--;
     }
 
