@@ -42,6 +42,7 @@ public class Like extends ApplicationAdapter {
     private final Array<Rectangle> collisionBounds = new Array<>();
     private final Array<GameObject> gameObjects = new Array<>();
     private final Array<Bullet> bullets = new Array<>();
+    private float shootArrowTimer = 0;
     private boolean isDebugRenderer = false;
     private boolean isDebugCamera = false;
 
@@ -209,35 +210,66 @@ public class Like extends ApplicationAdapter {
             camera.zoom -= 0.2f;
     }
 
-    private void shootBulletByDirection() {
+    private void shootBulletByDirection(float deltaTime) {
 
         var playerPosition = player.getActualPosition();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
 
-            var bulletBounds = new Rectangle(playerPosition.x + 16, playerPosition.y + 20, 16, 16);
-            var actualRegion = new TextureRegion(arrowRegion, 48, 0, 16, arrowRegion.getRegionHeight());
-            var bullet = new Bullet(bulletBounds, new Vector2(0, 1), actualRegion);
-            bullets.add(bullet);
+            shootArrowTimer += deltaTime;
 
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+            if (shootArrowTimer > 0.5f) {
 
-            var bulletBounds = new Rectangle(playerPosition.x + 16, playerPosition.y, 16, 16);
-            var actualRegion = new TextureRegion(arrowRegion, 16, 0, 16, arrowRegion.getRegionHeight());
-            var bullet = new Bullet(bulletBounds, new Vector2(0, -1), actualRegion);
-            bullets.add(bullet);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+                shootArrowTimer = 0;
 
-            var bulletBounds = new Rectangle(playerPosition.x, playerPosition.y + 16, 16, 16);
-            var actualRegion = new TextureRegion(arrowRegion, 32, 0, 16, arrowRegion.getRegionHeight());
-            var bullet = new Bullet(bulletBounds, new Vector2(-1, 0), actualRegion);
-            bullets.add(bullet);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+                var bulletBounds = new Rectangle(playerPosition.x + 16, playerPosition.y + 20, 16, 16);
+                var actualRegion = new TextureRegion(arrowRegion, 48, 0, 16, arrowRegion.getRegionHeight());
+                var bullet = new Bullet(bulletBounds, new Vector2(0, 1), actualRegion);
+                bullets.add(bullet);
+            }
 
-            var bulletBounds = new Rectangle(playerPosition.x + 20, playerPosition.y + 16, 16, 16);
-            var actualRegion = new TextureRegion(arrowRegion, 0, 0, 16, arrowRegion.getRegionHeight());
-            var bullet = new Bullet(bulletBounds, new Vector2(1, 0), actualRegion);
-            bullets.add(bullet);
+
+        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+
+            shootArrowTimer += deltaTime;
+
+            if (shootArrowTimer > 0.5f) {
+
+                shootArrowTimer = 0;
+
+                var bulletBounds = new Rectangle(playerPosition.x + 16, playerPosition.y, 16, 16);
+                var actualRegion = new TextureRegion(arrowRegion, 16, 0, 16, arrowRegion.getRegionHeight());
+                var bullet = new Bullet(bulletBounds, new Vector2(0, -1), actualRegion);
+                bullets.add(bullet);
+            }
+
+        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+
+            shootArrowTimer += deltaTime;
+
+            if (shootArrowTimer > 0.5f) {
+
+                shootArrowTimer = 0;
+
+                var bulletBounds = new Rectangle(playerPosition.x, playerPosition.y + 16, 16, 16);
+                var actualRegion = new TextureRegion(arrowRegion, 32, 0, 16, arrowRegion.getRegionHeight());
+                var bullet = new Bullet(bulletBounds, new Vector2(-1, 0), actualRegion);
+                bullets.add(bullet);
+            }
+
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+
+            shootArrowTimer += deltaTime;
+
+            if (shootArrowTimer > 0.5f) {
+
+                shootArrowTimer = 0;
+
+                var bulletBounds = new Rectangle(playerPosition.x + 20, playerPosition.y + 16, 16, 16);
+                var actualRegion = new TextureRegion(arrowRegion, 0, 0, 16, arrowRegion.getRegionHeight());
+                var bullet = new Bullet(bulletBounds, new Vector2(1, 0), actualRegion);
+                bullets.add(bullet);
+            }
         }
     }
 
@@ -265,7 +297,7 @@ public class Like extends ApplicationAdapter {
             }
         }
 
-        shootBulletByDirection();
+        shootBulletByDirection(deltaTime);
 
         for (var bullet : bullets) {
 

@@ -56,16 +56,16 @@ public class Player extends GameObject {
 
     private AnimationState getCurrentAnimationState() {
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W))
+        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP))
             return AnimationState.UP;
 
-        else if (Gdx.input.isKeyPressed(Input.Keys.S))
+        else if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN))
             return AnimationState.DOWN;
 
-        else if (Gdx.input.isKeyPressed(Input.Keys.A))
+        else if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT))
             return AnimationState.LEFT;
 
-        else if (Gdx.input.isKeyPressed(Input.Keys.D))
+        else if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT))
             return AnimationState.RIGHT;
 
         else
