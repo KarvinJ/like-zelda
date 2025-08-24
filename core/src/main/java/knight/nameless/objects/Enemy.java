@@ -55,10 +55,10 @@ public class Enemy extends GameObject {
 
     private void patrolEnemy(float deltaTime) {
 
-        if (isMovingRight && velocity.x <= 100)
+        if (isMovingRight && velocity.x <= 200)
             velocity.x += speed;
 
-        else if (!isMovingRight && velocity.x >= -100)
+        else if (!isMovingRight && velocity.x >= -200)
             velocity.x -= speed;
 
         velocity.x *= 0.9f;

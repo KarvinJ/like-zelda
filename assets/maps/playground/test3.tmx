@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="80" height="60" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="41">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="80" height="60" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="48">
  <tileset firstgid="1" source="tileset/environment.tsx"/>
  <objectgroup id="3" name="Collisions">
-  <object id="13" x="1.47367" y="929.333" width="637.456" height="30.6667"/>
-  <object id="25" x="1.2193" y="591.964" width="274.491" height="33.6667"/>
-  <object id="28" x="382.553" y="591.297" width="257.658" height="32.1667"/>
+  <object id="13" x="1.47367" y="928.06" width="637.456" height="31.9394"/>
+  <object id="25" x="1.2193" y="591.964" width="270.824" height="31.9167"/>
+  <object id="45" x="2.2193" y="224.964" width="274.491" height="30.6667"/>
+  <object id="28" x="384.553" y="592.297" width="255.658" height="31.1667"/>
+  <object id="46" x="383.053" y="224.797" width="257.658" height="32.1667"/>
   <object id="26" x="606.048" y="591.175" width="33.474" height="367.491"/>
+  <object id="47" x="607.048" y="225.675" width="33.474" height="367.491"/>
   <object id="27" x="0.912277" y="592.131" width="34.8073" height="367.956"/>
-  <object id="29" x="394" y="159" width="27" height="155"/>
-  <object id="30" x="190" y="154" width="28" height="173"/>
-  <object id="31" x="360" y="16" width="102" height="24"/>
+  <object id="44" x="0.412277" y="225.131" width="34.8073" height="367.956"/>
  </objectgroup>
  <objectgroup id="5" name="Enemies">
-  <object id="20" name="PATROLLER" x="96" y="875.333" width="32" height="32"/>
-  <object id="22" name="PATROLLER" x="440" y="746.667" width="32" height="32"/>
+  <object id="41" name="PATROLLER" x="48" y="496.666" width="32" height="32"/>
+  <object id="42" name="PATROLLER" x="566.667" y="336" width="32" height="32"/>
  </objectgroup>
  <layer id="4" name="Background" width="80" height="60" visible="0">
   <data encoding="csv">
