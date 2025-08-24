@@ -333,7 +333,7 @@ public class Like extends ApplicationAdapter {
                 actualEnemy.followThePlayer(deltaTime, player.getActualPosition());
 
                 var distance = player.getActualPosition().dst(actualEnemy.getActualPosition());
-                if (distance < 200)
+                if (distance < 300)
                     actualEnemy.isActive = true;
             }
         }
