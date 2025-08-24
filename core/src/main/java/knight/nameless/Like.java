@@ -46,7 +46,6 @@ public class Like extends ApplicationAdapter {
     private final Array<Rectangle> collisionBounds = new Array<>();
     private final Array<GameObject> gameObjects = new Array<>();
     private final Array<Bullet> bullets = new Array<>();
-    private Music music;
     private Sound arrowSound;
     private Sound hitArrowSound;
     private Sound deathSound;
@@ -73,7 +72,7 @@ public class Like extends ApplicationAdapter {
         tiledMap = new TmxMapLoader().load("maps/playground/test3.tmx");
         mapRenderer = setupMap(tiledMap);
 
-        music = AssetsHelper.loadMusic("peaceful.wav");
+        Music music = AssetsHelper.loadMusic("peaceful.wav");
         music.play();
         music.setVolume(0.5f);
         music.setLooping(true);
