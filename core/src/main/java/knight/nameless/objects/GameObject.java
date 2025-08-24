@@ -45,17 +45,17 @@ public abstract class GameObject {
         shapeRenderer.rect(bounds.x, bounds.y, bounds.width, bounds.height);
     }
 
-    protected Animation<TextureRegion> makeAnimationByTotalFrames(TextureRegion characterRegion, int totalFrames) {
+    protected Animation<TextureRegion> makeAnimationByTotalFrames(TextureRegion characterRegion) {
 
         Array<TextureRegion> animationFrames = new Array<>();
 
-        for (int i = 0; i < totalFrames; i++) {
+        for (int i = 0; i < 2; i++) {
 
             var actualFrame = new TextureRegion(characterRegion, i * regionWidth, 0, regionWidth, regionHeight);
             animationFrames.add(actualFrame);
         }
 
-        return new Animation<>(0.1f, animationFrames);
+        return new Animation<>(0.2f, animationFrames);
     }
 
     public Rectangle getPreviousPosition() {

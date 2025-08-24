@@ -24,10 +24,10 @@ public class Player extends GameObject {
             40
         );
 
-        movingUpAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprZinkWalkN"), 2);
-        movingDownAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprZinkWalkS"), 2);
-        movingRightAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprZinkWalkE"), 2);
-        movingLeftAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprZinkWalkW"), 2);
+        movingUpAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprZinkWalkN"));
+        movingDownAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprZinkWalkS"));
+        movingRightAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprZinkWalkE"));
+        movingLeftAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprZinkWalkW"));
     }
 
     @Override

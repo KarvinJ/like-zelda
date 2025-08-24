@@ -10,7 +10,7 @@ public class Bullet {
 
     public final Rectangle bounds;
     public final Vector2 velocity;
-    public final int speed = 500;
+    public final int speed = 300;
     public final TextureRegion textureRegion;
 
     public Bullet(Rectangle bounds, Vector2 velocity, TextureRegion textureRegion) {

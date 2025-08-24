@@ -1,7 +1,5 @@
 package knight.nameless.objects;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -34,10 +32,10 @@ public class Enemy extends GameObject {
         actualType = enemyType;
 
         isMovingRight = true;
-        movingUpAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprSwordKnightN"), 2);
-        movingDownAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprSwordKnightS"), 2);
-        movingRightAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprSwordKnightE"), 2);
-        movingLeftAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprSwordKnightW"), 2);
+        movingUpAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprSwordKnightN"));
+        movingDownAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprSwordKnightS"));
+        movingRightAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprSwordKnightE"));
+        movingLeftAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprSwordKnightW"));
     }
 
     private void destroyEnemy() {
@@ -155,13 +153,12 @@ public class Enemy extends GameObject {
 
         var actualPosition = getActualPosition();
 
-        var directionToFollow = new Vector2(0, 0);
-        directionToFollow.x = playerPosition.x - actualPosition.x;
-        directionToFollow.y = playerPosition.y - actualPosition.y;
-        directionToFollow.nor();
+        velocity.x = playerPosition.x - actualPosition.x;
+        velocity.y = playerPosition.y - actualPosition.y;
+        velocity.nor();
 
         int followSpeed = speed * 3;
-        bounds.x += directionToFollow.x * followSpeed * deltaTime;
-        bounds.y += directionToFollow.y * followSpeed * deltaTime;
+        bounds.x += velocity.x * followSpeed * deltaTime;
+        bounds.y += velocity.y * followSpeed * deltaTime;
     }
 }

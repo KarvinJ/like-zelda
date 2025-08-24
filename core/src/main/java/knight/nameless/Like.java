@@ -42,7 +42,7 @@ public class Like extends ApplicationAdapter {
     private final Array<Rectangle> collisionBounds = new Array<>();
     private final Array<GameObject> gameObjects = new Array<>();
     private final Array<Bullet> bullets = new Array<>();
-    private boolean isDebugRenderer = true;
+    private boolean isDebugRenderer = false;
     private boolean isDebugCamera = false;
 
     @Override
@@ -215,26 +215,26 @@ public class Like extends ApplicationAdapter {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
 
-            var bulletBounds = new Rectangle(playerPosition.x, playerPosition.y + 10, 8, 8);
-            var actualRegion = new TextureRegion(arrowRegion, 16, 0, 16, arrowRegion.getRegionHeight());
+            var bulletBounds = new Rectangle(playerPosition.x + 16, playerPosition.y + 20, 16, 16);
+            var actualRegion = new TextureRegion(arrowRegion, 48, 0, 16, arrowRegion.getRegionHeight());
             var bullet = new Bullet(bulletBounds, new Vector2(0, 1), actualRegion);
             bullets.add(bullet);
 
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
 
-            var bulletBounds = new Rectangle(playerPosition.x, playerPosition.y - 10, 8, 8);
-            var actualRegion = new TextureRegion(arrowRegion, 48, 0, 16, arrowRegion.getRegionHeight());
+            var bulletBounds = new Rectangle(playerPosition.x + 16, playerPosition.y, 16, 16);
+            var actualRegion = new TextureRegion(arrowRegion, 16, 0, 16, arrowRegion.getRegionHeight());
             var bullet = new Bullet(bulletBounds, new Vector2(0, -1), actualRegion);
             bullets.add(bullet);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
 
-            var bulletBounds = new Rectangle(playerPosition.x - 10, playerPosition.y, 8, 8);
+            var bulletBounds = new Rectangle(playerPosition.x, playerPosition.y + 16, 16, 16);
             var actualRegion = new TextureRegion(arrowRegion, 32, 0, 16, arrowRegion.getRegionHeight());
             var bullet = new Bullet(bulletBounds, new Vector2(-1, 0), actualRegion);
             bullets.add(bullet);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
 
-            var bulletBounds = new Rectangle(playerPosition.x + 10, playerPosition.y, 8, 8);
+            var bulletBounds = new Rectangle(playerPosition.x + 20, playerPosition.y + 16, 16, 16);
             var actualRegion = new TextureRegion(arrowRegion, 0, 0, 16, arrowRegion.getRegionHeight());
             var bullet = new Bullet(bulletBounds, new Vector2(1, 0), actualRegion);
             bullets.add(bullet);
