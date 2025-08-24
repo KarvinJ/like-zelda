@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 public class Player extends GameObject {
 
@@ -98,6 +99,15 @@ public class Player extends GameObject {
         previousState = actualState;
 
         return region;
+    }
+
+    public void hasCollideWithEnemy(Vector2 enemyPosition) {
+
+        if (bounds.x < enemyPosition.x)
+            bounds.x -= 50;
+
+        else if (bounds.x > enemyPosition.x)
+            bounds.x += 50;
     }
 
     private void flipPlayerOnXAxis(TextureRegion region) {
