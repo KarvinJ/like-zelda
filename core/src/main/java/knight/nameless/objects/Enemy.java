@@ -13,6 +13,7 @@ public class Enemy extends GameObject {
     private final Animation<TextureRegion> runningAnimation;
     private float stateTimer;
     public boolean isMovingRight;
+    public boolean isActive;
     public boolean setToDestroy;
     public boolean isDestroyed;
     public int health = 5;
@@ -88,7 +89,7 @@ public class Enemy extends GameObject {
 
     public void followThePlayer(float deltaTime, Vector2 playerPosition) {
 
-        if (isDestroyed || actualType == EnemyType.PATROLLER)
+        if (isDestroyed || !isActive || actualType == EnemyType.PATROLLER)
             return;
 
         var actualPosition = getActualPosition();
@@ -98,7 +99,7 @@ public class Enemy extends GameObject {
         directionToFollow.y = playerPosition.y - actualPosition.y;
         directionToFollow.nor();
 
-        int followSpeed = speed * 2;
+        int followSpeed = speed * 3;
         bounds.x += directionToFollow.x * followSpeed * deltaTime;
         bounds.y += directionToFollow.y * followSpeed * deltaTime;
     }

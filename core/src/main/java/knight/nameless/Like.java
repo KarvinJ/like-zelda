@@ -122,6 +122,12 @@ public class Like extends ApplicationAdapter {
                 iterator.remove();
                 enemy.health--;
 
+//                if (enemy.bounds.x < bullet.bounds.x)
+//                    enemy.bounds.x -= 10;
+//
+//                else if (enemy.bounds.x > bullet.bounds.x)
+//                    enemy.bounds.x += 10;
+
                 if (enemy.health == 0)
                     enemy.setToDestroy = true;
 
@@ -243,6 +249,10 @@ public class Like extends ApplicationAdapter {
                 hasBulletCollide(actualEnemy);
 
                 actualEnemy.followThePlayer(deltaTime, player.getActualPosition());
+
+                var distance = player.getActualPosition().dst(actualEnemy.getActualPosition());
+                if (distance < 200)
+                    actualEnemy.isActive = true;
             }
         }
 
