@@ -44,11 +44,13 @@ public class Like extends ApplicationAdapter {
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
     private final Array<Rectangle> collisionBounds = new Array<>();
+    private final Array<Rectangle> checkpoints = new Array<>();
     private final Array<GameObject> gameObjects = new Array<>();
     private final Array<Bullet> bullets = new Array<>();
     private Sound arrowSound;
     private Sound hitArrowSound;
     private Sound deathSound;
+    private Sound winSound;
     private float shootArrowTimer = 0;
     private boolean isDebugRenderer = false;
     private boolean isDebugCamera = false;
@@ -80,6 +82,7 @@ public class Like extends ApplicationAdapter {
         arrowSound = loadSound("arrow.wav");
         hitArrowSound = loadSound("magic.wav");
         deathSound = loadSound("fall.wav");
+        winSound = loadSound("win.wav");
     }
 
     public OrthogonalTiledMapRenderer setupMap(TiledMap tiledMap) {
@@ -119,6 +122,8 @@ public class Like extends ApplicationAdapter {
                 else if (mapObject.getName().equals("FOLLOWER"))
                     gameObjects.add(new Enemy(objectBounds, atlas, EnemyType.FOLLOWER));
             }
+            else if (layerName.equals("Checkpoints"))
+                checkpoints.add(objectBounds);
             else
                 collisionBounds.add(objectBounds);
         }
@@ -334,6 +339,21 @@ public class Like extends ApplicationAdapter {
                 var distance = player.getActualPosition().dst(actualEnemy.getActualPosition());
                 if (distance < 300)
                     actualEnemy.isActive = true;
+            }
+        }
+
+        for (var checkpoint :checkpoints) {
+
+            if (player.getCollisionBounds().overlaps(checkpoint)) {
+
+                camera.position.set(SCREEN_WIDTH / 2f, SCREEN_HEIGHT / 2f, 0);
+                cameraBounds = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+                for (GameObject gameObject : gameObjects) {
+                    gameObject.resetToInitialState();
+                }
+
+                winSound.play();
             }
         }
 
