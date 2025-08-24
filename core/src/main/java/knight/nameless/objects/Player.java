@@ -21,7 +21,7 @@ public class Player extends GameObject {
         super(
             bounds,
             new TextureRegion(atlas.findRegion("sprZinkWalkS"), 0, 0, 48, 48),
-            40
+            30
         );
 
         movingUpAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprZinkWalkN"));
@@ -113,5 +113,10 @@ public class Player extends GameObject {
 
         else if (bounds.x > enemyPosition.x)
             bounds.x += 50;
+    }
+
+    public Rectangle getCollisionBounds() {
+
+        return new Rectangle(bounds.x, bounds.y, bounds.width / 2, bounds.height / 2);
     }
 }
