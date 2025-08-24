@@ -237,10 +237,8 @@ public class Like extends ApplicationAdapter {
 
                 var actualEnemy = ((Enemy) gameObject);
 
-                if (player.bounds.overlaps(actualEnemy.bounds)) {
-
+                if (!actualEnemy.isDestroyed && player.bounds.overlaps(actualEnemy.bounds))
                     player.hasCollideWithEnemy(actualEnemy.getActualPosition());
-                }
 
                 hasBulletCollide(actualEnemy);
 
