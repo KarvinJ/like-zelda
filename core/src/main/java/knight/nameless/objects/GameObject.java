@@ -13,19 +13,26 @@ public abstract class GameObject {
     public final Rectangle bounds;
     protected TextureRegion actualRegion;
     protected final TextureRegion idleRegion;
+    protected float animationTimer = 0;
     public final Vector2 velocity = new Vector2(0, 0);
+    public final Vector2 initialPosition;
     private final int regionWidth;
     private final int regionHeight;
     public final int speed;
+    public int health;
+    public int initialHealth;
 
-    protected GameObject(Rectangle bounds, TextureRegion region, int speed) {
+    protected GameObject(Rectangle bounds, TextureRegion region, int speed, int health) {
 
         this.bounds = bounds;
         actualRegion = region;
         regionWidth = region.getRegionWidth();
         regionHeight = region.getRegionHeight();
         this.speed = speed;
+        this.health = health;
+        initialHealth = health;
         idleRegion = region;
+        initialPosition = new Vector2(bounds.x, bounds.y);
     }
 
     protected abstract void childUpdate(float deltaTime);
@@ -68,6 +75,16 @@ public abstract class GameObject {
 
     public Vector2 getActualPosition() {
         return new Vector2(bounds.x, bounds.y);
+    }
+
+    public void resetToInitialState() {
+
+        velocity.x = 0;
+        velocity.y = 0;
+        animationTimer = 0;
+        health = initialHealth;
+        bounds.x = initialPosition.x;
+        bounds.y = initialPosition.y;
     }
 
     public void dispose() {

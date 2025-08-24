@@ -78,6 +78,16 @@ public class Like extends ApplicationAdapter {
         return new OrthogonalTiledMapRenderer(tiledMap, 1);
     }
 
+    public void resetGame() {
+
+        camera.position.set(SCREEN_WIDTH / 2f, SCREEN_HEIGHT / 2f, 0);
+        cameraBounds = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+        for (GameObject gameObject : gameObjects) {
+             gameObject.resetToInitialState();
+        }
+    }
+
     private void parseMapObjectsToBounds(MapObjects mapObjects, String layerName) {
 
         for (MapObject mapObject : mapObjects) {
@@ -125,13 +135,15 @@ public class Like extends ApplicationAdapter {
             if (bullet.bounds.overlaps(enemy.bounds)) {
 
                 iterator.remove();
-                enemy.health--;
 
-//                if (enemy.bounds.x < bullet.bounds.x)
-//                    enemy.bounds.x -= 10;
-//
-//                else if (enemy.bounds.x > bullet.bounds.x)
-//                    enemy.bounds.x += 10;
+                if (enemy.actualType != EnemyType.PATROLLER)
+                    enemy.health--;
+
+                if (enemy.bounds.x < bullet.bounds.x)
+                    enemy.bounds.x -= 10;
+
+                else if (enemy.bounds.x > bullet.bounds.x)
+                    enemy.bounds.x += 10;
 
                 if (enemy.health == 0)
                     enemy.setToDestroy = true;
@@ -296,6 +308,10 @@ public class Like extends ApplicationAdapter {
                     actualEnemy.isActive = true;
             }
         }
+
+
+        if (player.health == 0)
+            resetGame();
 
         shootBulletByDirection(deltaTime);
 

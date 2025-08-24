@@ -15,13 +15,13 @@ public class Player extends GameObject {
     private final Animation<TextureRegion> movingDownAnimations;
     private final Animation<TextureRegion> movingRightAnimations;
     private final Animation<TextureRegion> movingLeftAnimations;
-    private float animationTimer = 0;
 
     public Player(Rectangle bounds, TextureAtlas atlas) {
         super(
             bounds,
             new TextureRegion(atlas.findRegion("sprZinkWalkS"), 0, 0, 48, 48),
-            30
+            30,
+            1
         );
 
         movingUpAnimations = makeAnimationByTotalFrames(atlas.findRegion("sprZinkWalkN"));
@@ -113,6 +113,8 @@ public class Player extends GameObject {
 
         else if (bounds.x > enemyPosition.x)
             bounds.x += 50;
+
+        health--;
     }
 
     public Rectangle getCollisionBounds() {

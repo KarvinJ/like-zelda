@@ -9,24 +9,23 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class Enemy extends GameObject {
-    private final EnemyType actualType;
+    public final EnemyType actualType;
     private AnimationState previousState = AnimationState.UP;
     private final Animation<TextureRegion> movingUpAnimations;
     private final Animation<TextureRegion> movingDownAnimations;
     private final Animation<TextureRegion> movingRightAnimations;
     private final Animation<TextureRegion> movingLeftAnimations;
-    private float animationTimer;
     public boolean isMovingRight;
     public boolean isActive;
     public boolean setToDestroy;
     public boolean isDestroyed;
-    public int health = 5;
 
     public Enemy(Rectangle bounds, TextureAtlas atlas, EnemyType enemyType) {
         super(
             bounds,
             new TextureRegion(atlas.findRegion("sprSwordKnightS"), 0, 0, 32, 32),
-            50
+            50,
+            5
         );
 
         actualType = enemyType;
@@ -160,5 +159,14 @@ public class Enemy extends GameObject {
         int followSpeed = speed * 3;
         bounds.x += velocity.x * followSpeed * deltaTime;
         bounds.y += velocity.y * followSpeed * deltaTime;
+    }
+
+    @Override
+    public void resetToInitialState() {
+
+        setToDestroy = false;
+        isDestroyed = false;
+        isActive = false;
+        super.resetToInitialState();
     }
 }
