@@ -28,8 +28,6 @@ import knight.nameless.objects.*;
 
 import java.util.Iterator;
 
-import static knight.nameless.AssetsHelper.loadSound;
-
 public class Like extends ApplicationAdapter {
 
     private final int SCREEN_WIDTH = 640;
@@ -47,6 +45,7 @@ public class Like extends ApplicationAdapter {
     private final Array<Rectangle> checkpoints = new Array<>();
     private final Array<GameObject> gameObjects = new Array<>();
     private final Array<Bullet> bullets = new Array<>();
+    private Music music;
     private Sound arrowSound;
     private Sound hitArrowSound;
     private Sound deathSound;
@@ -74,7 +73,7 @@ public class Like extends ApplicationAdapter {
         tiledMap = new TmxMapLoader().load("maps/playground/test3.tmx");
         mapRenderer = setupMap(tiledMap);
 
-        Music music = AssetsHelper.loadMusic("peaceful.wav");
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/"+ "peaceful.wav"));
         music.play();
         music.setVolume(0.5f);
         music.setLooping(true);
@@ -83,6 +82,11 @@ public class Like extends ApplicationAdapter {
         hitArrowSound = loadSound("magic.wav");
         deathSound = loadSound("fall.wav");
         winSound = loadSound("win.wav");
+    }
+
+    private Sound loadSound(String filename){
+
+        return Gdx.audio.newSound(Gdx.files.internal("sounds/"+ filename));
     }
 
     public OrthogonalTiledMapRenderer setupMap(TiledMap tiledMap) {
@@ -483,6 +487,12 @@ public class Like extends ApplicationAdapter {
         tiledMap.dispose();
         mapRenderer.dispose();
         atlas.dispose();
+
+        music.dispose();
+        arrowSound.dispose();
+        hitArrowSound.dispose();
+        deathSound.dispose();
+        winSound.dispose();
 
         for (var gameObject : gameObjects)
             gameObject.dispose();
