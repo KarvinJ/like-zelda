@@ -14,13 +14,13 @@ public abstract class GameObject {
     protected TextureRegion actualRegion;
     protected final TextureRegion idleRegion;
     protected float animationTimer = 0;
+    protected final int speed;
     public final Vector2 velocity = new Vector2(0, 0);
-    public final Vector2 initialPosition;
+    private final Vector2 initialPosition;
     private final int regionWidth;
     private final int regionHeight;
-    public final int speed;
     public int health;
-    public int initialHealth;
+    private final int initialHealth;
 
     protected GameObject(Rectangle bounds, TextureRegion region, int speed, int health) {
 

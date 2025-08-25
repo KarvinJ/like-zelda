@@ -9,9 +9,8 @@ import com.badlogic.gdx.math.Vector2;
 public class Bullet {
 
     public final Rectangle bounds;
-    public final Vector2 velocity;
-    public final int speed = 300;
-    public final TextureRegion textureRegion;
+    private final Vector2 velocity;
+    private final TextureRegion textureRegion;
 
     public Bullet(Rectangle bounds, Vector2 velocity, TextureRegion textureRegion) {
         this.bounds = bounds;
@@ -21,6 +20,7 @@ public class Bullet {
 
     public void update(float deltaTime) {
 
+        int speed = 300;
         bounds.x += speed * velocity.x * deltaTime;
         bounds.y += speed * velocity.y * deltaTime;
     }

@@ -15,7 +15,7 @@ public class Enemy extends GameObject {
     private final Animation<TextureRegion> movingDownAnimations;
     private final Animation<TextureRegion> movingRightAnimations;
     private final Animation<TextureRegion> movingLeftAnimations;
-    public boolean isMovingRight;
+    private boolean isMovingRight;
     public boolean isActive;
     public boolean setToDestroy;
     public boolean isDestroyed;
