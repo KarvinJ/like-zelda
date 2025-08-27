@@ -60,17 +60,18 @@ public class Enemy extends GameObject {
 
     private AnimationState getCurrentState() {
 
-        if (velocity.y > 0)
+        //need to check which velocity is higher between the X And Y, to ensure that all animations are played correctly
+        if (velocity.y > 0 && velocity.y > velocity.x)
             return AnimationState.UP;
 
-        else if (velocity.y < 0)
+        else if (velocity.x > 0 && velocity.x > velocity.y)
+            return AnimationState.RIGHT;
+
+        else if (velocity.y < 0 && velocity.y < velocity.x)
             return AnimationState.DOWN;
 
-        else if (velocity.x < 0)
+        else if (velocity.x < 0 && velocity.x < velocity.y)
             return AnimationState.LEFT;
-
-        else if (velocity.x > 0)
-            return AnimationState.RIGHT;
 
         else
             return AnimationState.STANDING;
@@ -139,7 +140,7 @@ public class Enemy extends GameObject {
             super.draw(shapeRenderer);
     }
 
-    public void changeDirection(){
+    public void changeDirection() {
         isMovingRight = !isMovingRight;
     }
 
