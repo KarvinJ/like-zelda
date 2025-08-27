@@ -46,8 +46,6 @@ public class Enemy extends GameObject {
     @Override
     protected void childUpdate(float deltaTime) {
 
-        animationTimer += deltaTime;
-
         if (setToDestroy && !isDestroyed)
             destroyEnemy();
 
