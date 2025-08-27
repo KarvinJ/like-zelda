@@ -43,8 +43,8 @@ public class Like extends ApplicationAdapter {
     private OrthogonalTiledMapRenderer mapRenderer;
     private final Array<Rectangle> collisionBounds = new Array<>();
     private final Array<Rectangle> checkpoints = new Array<>();
-    private final Array<GameObject> gameObjects = new Array<>();
     private final Array<Bullet> bullets = new Array<>();
+    private final Array<GameObject> gameObjects = new Array<>();
     private Music music;
     private Sound arrowSound;
     private Sound hitArrowSound;
@@ -101,18 +101,6 @@ public class Like extends ApplicationAdapter {
         return new OrthogonalTiledMapRenderer(tiledMap, 1);
     }
 
-    public void resetGame() {
-
-        camera.position.set(SCREEN_WIDTH / 2f, SCREEN_HEIGHT / 2f, 0);
-        cameraBounds = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-        deathSound.play();
-
-        for (GameObject gameObject : gameObjects) {
-             gameObject.resetToInitialState();
-        }
-    }
-
     private void parseMapObjectsToBounds(MapObjects mapObjects, String layerName) {
 
         for (MapObject mapObject : mapObjects) {
@@ -133,9 +121,14 @@ public class Like extends ApplicationAdapter {
         }
     }
 
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height);
+    public void resetGame() {
+
+        camera.position.set(SCREEN_WIDTH / 2f, SCREEN_HEIGHT / 2f, 0);
+        cameraBounds = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+        for (GameObject gameObject : gameObjects) {
+             gameObject.resetToInitialState();
+        }
     }
 
     private boolean checkCollisionInX(Rectangle bounds, Rectangle platform) {
@@ -196,30 +189,30 @@ public class Like extends ApplicationAdapter {
         }
     }
 
-    private void manageStructureCollision(GameObject gameObject) {
+    private void manageCollisionWithStructures(GameObject gameObject) {
 
-        for (var structure : collisionBounds) {
+        for (var collisionBound : collisionBounds) {
 
-            hasBulletCollide(structure);
+            hasBulletCollide(collisionBound);
 
-            if (gameObject.bounds.overlaps(structure)) {
+            if (gameObject.getCollisionBounds().overlaps(collisionBound)) {
 
-                if (checkCollisionInX(gameObject.getPreviousPosition(), structure)) {
+                if (checkCollisionInX(gameObject.getPreviousPosition(), collisionBound)) {
 
                     if (gameObject.velocity.y < 0)
-                        gameObject.bounds.y = structure.y + structure.height;
+                        gameObject.bounds.y = collisionBound.y + collisionBound.height;
                     else
-                        gameObject.bounds.y = structure.y - gameObject.bounds.height;
+                        gameObject.bounds.y = collisionBound.y - gameObject.bounds.height;
 
                     gameObject.velocity.y = 0;
                 }
-                else if (checkCollisionInY(gameObject.getPreviousPosition(), structure)) {
+                else if (checkCollisionInY(gameObject.getPreviousPosition(), collisionBound)) {
 
                     if (gameObject.velocity.x > 0)
-                        gameObject.bounds.x = structure.x - gameObject.bounds.width;
+                        gameObject.bounds.x = collisionBound.x - gameObject.bounds.width;
 
                     else
-                        gameObject.bounds.x = structure.x + structure.width;
+                        gameObject.bounds.x = collisionBound.x + collisionBound.width;
 
                     gameObject.velocity.x = 0;
 
@@ -324,17 +317,23 @@ public class Like extends ApplicationAdapter {
 
     private void update(float deltaTime) {
 
+        if (player.isDead) {
+
+            deathSound.play();
+            resetGame();
+        }
+
         for (GameObject gameObject : gameObjects) {
 
             gameObject.update(deltaTime);
-            manageStructureCollision(gameObject);
+            manageCollisionWithStructures(gameObject);
 
             if (gameObject instanceof Enemy) {
 
                 var actualEnemy = ((Enemy) gameObject);
 
-                if (!actualEnemy.isDestroyed && player.getCollisionBounds().overlaps(actualEnemy.bounds))
-                    player.hasCollideWithEnemy(actualEnemy.getActualPosition());
+                if (!actualEnemy.isDestroyed && player.getCollisionBounds().overlaps(actualEnemy.getCollisionBounds()))
+                    player.hasCollideWithEnemy();
 
                 hasBulletCollide(actualEnemy);
 
@@ -346,23 +345,14 @@ public class Like extends ApplicationAdapter {
             }
         }
 
-        for (var checkpoint :checkpoints) {
+        for (var checkpoint : checkpoints) {
 
             if (player.getCollisionBounds().overlaps(checkpoint)) {
 
-                camera.position.set(SCREEN_WIDTH / 2f, SCREEN_HEIGHT / 2f, 0);
-                cameraBounds = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-                for (GameObject gameObject : gameObjects) {
-                    gameObject.resetToInitialState();
-                }
-
                 winSound.play();
+                resetGame();
             }
         }
-
-        if (player.isDead)
-            resetGame();
 
         shootBulletByDirection(deltaTime);
 
@@ -376,40 +366,43 @@ public class Like extends ApplicationAdapter {
 
         if (isDebugCamera)
             controlCameraPosition(camera);
-        else {
-
-            var playerPosition = player.getActualPosition();
-
-            if (playerPosition.x > cameraBounds.x + cameraBounds.width) {
-
-                var cameraXPosition = playerPosition.x + cameraBounds.width / 2;
-                cameraBounds.x += cameraBounds.width;
-                camera.position.set(new Vector2(cameraXPosition, camera.position.y), 0);
-            }
-
-            else if (playerPosition.x < cameraBounds.x) {
-
-                var cameraXPosition = playerPosition.x - cameraBounds.width / 2;
-                cameraBounds.x -= cameraBounds.width;
-                camera.position.set(new Vector2(cameraXPosition, camera.position.y), 0);
-            }
-
-             else if (playerPosition.y > cameraBounds.y + cameraBounds.height) {
-
-                var cameraYPosition = playerPosition.y + cameraBounds.height / 2;
-                cameraBounds.y += cameraBounds.height;
-                camera.position.set(new Vector2(camera.position.x, cameraYPosition), 0);
-            }
-
-            else if (playerPosition.y < cameraBounds.y) {
-
-                var cameraYPosition = playerPosition.y - cameraBounds.height / 2;
-                cameraBounds.y -= cameraBounds.height;
-                camera.position.set(new Vector2(camera.position.x, cameraYPosition), 0);
-            }
-        }
+        else
+            handleCameraMovement();
 
         camera.update();
+    }
+
+    private void handleCameraMovement() {
+
+        var playerPosition = player.getActualPosition();
+
+        if (playerPosition.x > cameraBounds.x + cameraBounds.width) {
+
+            var cameraXPosition = playerPosition.x + cameraBounds.width / 2;
+            cameraBounds.x += cameraBounds.width;
+            camera.position.set(new Vector2(cameraXPosition, camera.position.y), 0);
+        }
+
+        else if (playerPosition.x < cameraBounds.x) {
+
+            var cameraXPosition = playerPosition.x - cameraBounds.width / 2;
+            cameraBounds.x -= cameraBounds.width;
+            camera.position.set(new Vector2(cameraXPosition, camera.position.y), 0);
+        }
+
+         else if (playerPosition.y > cameraBounds.y + cameraBounds.height) {
+
+            var cameraYPosition = playerPosition.y + cameraBounds.height / 2;
+            cameraBounds.y += cameraBounds.height;
+            camera.position.set(new Vector2(camera.position.x, cameraYPosition), 0);
+        }
+
+        else if (playerPosition.y < cameraBounds.y) {
+
+            var cameraYPosition = playerPosition.y - cameraBounds.height / 2;
+            cameraBounds.y -= cameraBounds.height;
+            camera.position.set(new Vector2(camera.position.x, cameraYPosition), 0);
+        }
     }
 
     void draw() {
@@ -462,9 +455,6 @@ public class Like extends ApplicationAdapter {
             shapeRenderer.rect(structure.x, structure.y, structure.width, structure.height);
         }
 
-        shapeRenderer.setColor(Color.GOLD);
-        shapeRenderer.rect(cameraBounds.x, cameraBounds.y, cameraBounds.width, cameraBounds.height);
-
         shapeRenderer.setColor(Color.RED);
         for (var bullet : bullets) {
 
@@ -477,7 +467,15 @@ public class Like extends ApplicationAdapter {
             gameObject.draw(shapeRenderer);
         }
 
+        shapeRenderer.setColor(Color.GOLD);
+        shapeRenderer.rect(cameraBounds.x, cameraBounds.y, cameraBounds.width, cameraBounds.height);
+
         shapeRenderer.end();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height);
     }
 
     @Override
@@ -487,6 +485,7 @@ public class Like extends ApplicationAdapter {
         tiledMap.dispose();
         mapRenderer.dispose();
         atlas.dispose();
+        arrowRegion.getTexture().dispose();
 
         music.dispose();
         arrowSound.dispose();

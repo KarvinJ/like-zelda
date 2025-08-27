@@ -49,7 +49,8 @@ public abstract class GameObject {
 
     public void draw(ShapeRenderer shapeRenderer) {
 
-        shapeRenderer.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+        var drawBounds = getCollisionBounds();
+        shapeRenderer.rect(drawBounds.x, drawBounds.y, drawBounds.width, drawBounds.height);
     }
 
     protected Animation<TextureRegion> makeAnimationByTotalFrames(TextureRegion characterRegion) {
@@ -67,10 +68,23 @@ public abstract class GameObject {
 
     public Rectangle getPreviousPosition() {
 
-        float positionX = bounds.x - velocity.x;
-        float positionY = bounds.y - velocity.y;
+        var collisionBounds = getCollisionBounds();
 
-        return new Rectangle(positionX, positionY, bounds.width, bounds.height);
+        float positionX = collisionBounds.x - velocity.x;
+        float positionY = collisionBounds.y - velocity.y;
+
+        return new Rectangle(positionX, positionY, collisionBounds.width, collisionBounds.height);
+    }
+
+    //The initial bounds was too big, so I decide to half the width and height of all my objects.
+    public Rectangle getCollisionBounds() {
+
+        return new Rectangle(
+            bounds.x + bounds.width / 2 / 2,
+            bounds.y + bounds.height / 2 / 2,
+            bounds.width / 2,
+            bounds.height / 2
+        );
     }
 
     public Vector2 getActualPosition() {

@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 
 public class Player extends GameObject {
 
@@ -124,17 +123,12 @@ public class Player extends GameObject {
         return region;
     }
 
-    public void hasCollideWithEnemy(Vector2 enemyPosition) {
+    public void hasCollideWithEnemy() {
 
         if (health == 0)
             return;
 
         health--;
-    }
-
-    public Rectangle getCollisionBounds() {
-
-        return new Rectangle(bounds.x, bounds.y, bounds.width / 2, bounds.height / 2);
     }
 
     @Override
