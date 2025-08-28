@@ -328,6 +328,8 @@ public class Like extends ApplicationAdapter {
 
         if (Gdx.input.isTouched())
             handleTouchControls(mouseBounds);
+        else
+            player.touchState = AnimationState.STANDING;
 
         if (player.isDead) {
 
@@ -407,9 +409,6 @@ public class Like extends ApplicationAdapter {
                         player.velocity.x -= player.speed;
                         player.touchState = AnimationState.LEFT;
                         break;
-
-                    default:
-                        player.touchState = AnimationState.STANDING;
                 }
 
             }
