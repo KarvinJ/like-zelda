@@ -326,30 +326,8 @@ public class Like extends ApplicationAdapter {
         Vector3 worldCoordinates = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         var mouseBounds = new Rectangle(worldCoordinates.x, worldCoordinates.y, 2, 2);
 
-        if (Gdx.input.isTouched()) {
-
-            for (var set : controlsBoundsMap.entrySet()) {
-
-                if (mouseBounds.overlaps(set.getValue())) {
-
-                    switch (set.getKey()) {
-                        case "up":
-                            player.velocity.y += player.speed;
-                            break;
-                        case "down":
-                            player.velocity.y -= player.speed;
-                            break;
-                        case "right":
-                            player.velocity.x += player.speed;
-                            break;
-                        case "left":
-                            player.velocity.x -= player.speed;
-                            break;
-                    }
-
-                }
-            }
-        }
+        if (Gdx.input.isTouched())
+            handleTouchControls(mouseBounds);
 
         if (player.isDead) {
 
@@ -404,6 +382,30 @@ public class Like extends ApplicationAdapter {
             handleCameraMovement();
 
         camera.update();
+    }
+
+    private void handleTouchControls(Rectangle mouseBounds) {
+        for (var set : controlsBoundsMap.entrySet()) {
+
+            if (mouseBounds.overlaps(set.getValue())) {
+
+                switch (set.getKey()) {
+                    case "up":
+                        player.velocity.y += player.speed;
+                        break;
+                    case "down":
+                        player.velocity.y -= player.speed;
+                        break;
+                    case "right":
+                        player.velocity.x += player.speed;
+                        break;
+                    case "left":
+                        player.velocity.x -= player.speed;
+                        break;
+                }
+
+            }
+        }
     }
 
     private void handleCameraMovement() {
