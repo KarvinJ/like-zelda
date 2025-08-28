@@ -14,7 +14,7 @@ public abstract class GameObject {
     protected TextureRegion actualRegion;
     protected final TextureRegion idleRegion;
     protected float animationTimer = 0;
-    protected final int speed;
+    public final int speed;
     public final Vector2 velocity = new Vector2(0, 0);
     private final Vector2 initialPosition;
     private final int regionWidth;

@@ -20,12 +20,14 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 import knight.nameless.objects.*;
 
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class Like extends ApplicationAdapter {
@@ -42,6 +44,11 @@ public class Like extends ApplicationAdapter {
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
     private final Array<Rectangle> collisionBounds = new Array<>();
+//    private final HashMap<String, Rectangle> controlsBoundsMap = new HashMap<>();
+    private final Rectangle topBounds = new Rectangle(100, 125, 32 , 32);
+    private final Rectangle bottomBounds = new Rectangle(100, 25, 32 , 32);
+    private final Rectangle leftBounds = new Rectangle(50, 75, 32 , 32);
+    private final Rectangle rightBounds = new Rectangle(150, 75, 32 , 32);
     private final Array<Rectangle> checkpoints = new Array<>();
     private final Array<Bullet> bullets = new Array<>();
     private final Array<GameObject> gameObjects = new Array<>();
@@ -317,6 +324,24 @@ public class Like extends ApplicationAdapter {
 
     private void update(float deltaTime) {
 
+        Vector3 worldCoordinates = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        var mouseBounds = new Rectangle(worldCoordinates.x, worldCoordinates.y, 2, 2);
+
+        if (Gdx.input.isTouched()) {
+
+            if (mouseBounds.overlaps(topBounds))
+                player.velocity.y += player.speed;
+
+            else if (mouseBounds.overlaps(bottomBounds))
+                player.velocity.y -= player.speed;
+
+            else if (mouseBounds.overlaps(rightBounds))
+                player.velocity.x += player.speed;
+
+            else if (mouseBounds.overlaps(leftBounds))
+                player.velocity.x -= player.speed;
+        }
+
         if (player.isDead) {
 
             deathSound.play();
@@ -466,6 +491,11 @@ public class Like extends ApplicationAdapter {
 
             gameObject.draw(shapeRenderer);
         }
+
+        shapeRenderer.rect(topBounds.x, topBounds.y, topBounds.width, topBounds.height);
+        shapeRenderer.rect(bottomBounds.x, bottomBounds.y, bottomBounds.width, bottomBounds.height);
+        shapeRenderer.rect(rightBounds.x, rightBounds.y, rightBounds.width, rightBounds.height);
+        shapeRenderer.rect(leftBounds.x, leftBounds.y, leftBounds.width, leftBounds.height);
 
         shapeRenderer.setColor(Color.GOLD);
         shapeRenderer.rect(cameraBounds.x, cameraBounds.y, cameraBounds.width, cameraBounds.height);
