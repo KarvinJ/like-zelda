@@ -44,14 +44,10 @@ public class Like extends ApplicationAdapter {
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
     private final Array<Rectangle> collisionBounds = new Array<>();
-//    private final HashMap<String, Rectangle> controlsBoundsMap = new HashMap<>();
-    private final Rectangle topBounds = new Rectangle(100, 125, 32 , 32);
-    private final Rectangle bottomBounds = new Rectangle(100, 25, 32 , 32);
-    private final Rectangle leftBounds = new Rectangle(50, 75, 32 , 32);
-    private final Rectangle rightBounds = new Rectangle(150, 75, 32 , 32);
     private final Array<Rectangle> checkpoints = new Array<>();
     private final Array<Bullet> bullets = new Array<>();
     private final Array<GameObject> gameObjects = new Array<>();
+    private final HashMap<String, Rectangle> controlsBoundsMap = new HashMap<>();
     private Music music;
     private Sound arrowSound;
     private Sound hitArrowSound;
@@ -80,7 +76,7 @@ public class Like extends ApplicationAdapter {
         tiledMap = new TmxMapLoader().load("maps/playground/test3.tmx");
         mapRenderer = setupMap(tiledMap);
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/"+ "peaceful.wav"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/" + "peaceful.wav"));
         music.play();
         music.setVolume(0.5f);
         music.setLooping(true);
@@ -89,11 +85,16 @@ public class Like extends ApplicationAdapter {
         hitArrowSound = loadSound("magic.wav");
         deathSound = loadSound("fall.wav");
         winSound = loadSound("win.wav");
+
+        controlsBoundsMap.put("up", new Rectangle(100, 125, 32, 32));
+        controlsBoundsMap.put("down", new Rectangle(100, 25, 32, 32));
+        controlsBoundsMap.put("right", new Rectangle(150, 75, 32, 32));
+        controlsBoundsMap.put("left", new Rectangle(50, 75, 32, 32));
     }
 
-    private Sound loadSound(String filename){
+    private Sound loadSound(String filename) {
 
-        return Gdx.audio.newSound(Gdx.files.internal("sounds/"+ filename));
+        return Gdx.audio.newSound(Gdx.files.internal("sounds/" + filename));
     }
 
     public OrthogonalTiledMapRenderer setupMap(TiledMap tiledMap) {
@@ -120,8 +121,7 @@ public class Like extends ApplicationAdapter {
                     gameObjects.add(new Enemy(objectBounds, atlas, EnemyType.PATROLLER));
                 else if (mapObject.getName().equals("FOLLOWER"))
                     gameObjects.add(new Enemy(objectBounds, atlas, EnemyType.FOLLOWER));
-            }
-            else if (layerName.equals("Checkpoints"))
+            } else if (layerName.equals("Checkpoints"))
                 checkpoints.add(objectBounds);
             else
                 collisionBounds.add(objectBounds);
@@ -134,7 +134,7 @@ public class Like extends ApplicationAdapter {
         cameraBounds = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
         for (GameObject gameObject : gameObjects) {
-             gameObject.resetToInitialState();
+            gameObject.resetToInitialState();
         }
     }
 
@@ -212,8 +212,7 @@ public class Like extends ApplicationAdapter {
                         gameObject.bounds.y = collisionBound.y - gameObject.bounds.height;
 
                     gameObject.velocity.y = 0;
-                }
-                else if (checkCollisionInY(gameObject.getPreviousPosition(), collisionBound)) {
+                } else if (checkCollisionInY(gameObject.getPreviousPosition(), collisionBound)) {
 
                     if (gameObject.velocity.x > 0)
                         gameObject.bounds.x = collisionBound.x - gameObject.bounds.width;
@@ -329,17 +328,27 @@ public class Like extends ApplicationAdapter {
 
         if (Gdx.input.isTouched()) {
 
-            if (mouseBounds.overlaps(topBounds))
-                player.velocity.y += player.speed;
+            for (var set : controlsBoundsMap.entrySet()) {
 
-            else if (mouseBounds.overlaps(bottomBounds))
-                player.velocity.y -= player.speed;
+                if (mouseBounds.overlaps(set.getValue())) {
 
-            else if (mouseBounds.overlaps(rightBounds))
-                player.velocity.x += player.speed;
+                    switch (set.getKey()) {
+                        case "up":
+                            player.velocity.y += player.speed;
+                            break;
+                        case "down":
+                            player.velocity.y -= player.speed;
+                            break;
+                        case "right":
+                            player.velocity.x += player.speed;
+                            break;
+                        case "left":
+                            player.velocity.x -= player.speed;
+                            break;
+                    }
 
-            else if (mouseBounds.overlaps(leftBounds))
-                player.velocity.x -= player.speed;
+                }
+            }
         }
 
         if (player.isDead) {
@@ -406,28 +415,51 @@ public class Like extends ApplicationAdapter {
             var cameraXPosition = playerPosition.x + cameraBounds.width / 2;
             cameraBounds.x += cameraBounds.width;
             camera.position.set(new Vector2(cameraXPosition, camera.position.y), 0);
-        }
-
-        else if (playerPosition.x < cameraBounds.x) {
+        } else if (playerPosition.x < cameraBounds.x) {
 
             var cameraXPosition = playerPosition.x - cameraBounds.width / 2;
             cameraBounds.x -= cameraBounds.width;
             camera.position.set(new Vector2(cameraXPosition, camera.position.y), 0);
-        }
-
-         else if (playerPosition.y > cameraBounds.y + cameraBounds.height) {
+        } else if (playerPosition.y > cameraBounds.y + cameraBounds.height) {
 
             var cameraYPosition = playerPosition.y + cameraBounds.height / 2;
             cameraBounds.y += cameraBounds.height;
             camera.position.set(new Vector2(camera.position.x, cameraYPosition), 0);
-        }
-
-        else if (playerPosition.y < cameraBounds.y) {
+        } else if (playerPosition.y < cameraBounds.y) {
 
             var cameraYPosition = playerPosition.y - cameraBounds.height / 2;
             cameraBounds.y -= cameraBounds.height;
             camera.position.set(new Vector2(camera.position.x, cameraYPosition), 0);
         }
+
+//        for (var set : controlsBoundsMap.entrySet()) {
+//
+//            var controlBounds = set.getValue();
+//
+//            if (cameraBounds.x == 0 && cameraBounds.y == 0 )
+//                break;
+//
+//            controlBounds.x = cameraBounds.x + controlBounds.x;
+//            controlBounds.y = cameraBounds.y + controlBounds.x;
+
+//            switch (set.getKey()) {
+//                case "up":
+//                    controlBounds.x = cameraBounds.x + controlBounds.x;
+//                    controlBounds.y = cameraBounds.y + controlBounds.x;
+//                    break;
+//                case "down":
+//                    player.velocity.y -= player.speed;
+//                    break;
+//                case "right":
+//                    player.velocity.x += player.speed;
+//                    break;
+//                case "left":
+//                    player.velocity.x -= player.speed;
+//                    break;
+//            }
+
+
+//        }
     }
 
     void draw() {
@@ -492,12 +524,13 @@ public class Like extends ApplicationAdapter {
             gameObject.draw(shapeRenderer);
         }
 
-        shapeRenderer.rect(topBounds.x, topBounds.y, topBounds.width, topBounds.height);
-        shapeRenderer.rect(bottomBounds.x, bottomBounds.y, bottomBounds.width, bottomBounds.height);
-        shapeRenderer.rect(rightBounds.x, rightBounds.y, rightBounds.width, rightBounds.height);
-        shapeRenderer.rect(leftBounds.x, leftBounds.y, leftBounds.width, leftBounds.height);
-
         shapeRenderer.setColor(Color.GOLD);
+        for (var set : controlsBoundsMap.entrySet()) {
+
+            var controlBounds = set.getValue();
+            shapeRenderer.rect(controlBounds.x, controlBounds.y, controlBounds.width, controlBounds.height);
+        }
+
         shapeRenderer.rect(cameraBounds.x, cameraBounds.y, cameraBounds.width, cameraBounds.height);
 
         shapeRenderer.end();
