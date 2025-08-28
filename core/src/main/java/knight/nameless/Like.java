@@ -54,7 +54,7 @@ public class Like extends ApplicationAdapter {
     private Sound deathSound;
     private Sound winSound;
     private float shootArrowTimer = 0;
-    private boolean isDebugRenderer = false;
+    private boolean isDebugRenderer = true;
     private boolean isDebugCamera = false;
 
     @Override
@@ -415,16 +415,19 @@ public class Like extends ApplicationAdapter {
             var cameraXPosition = playerPosition.x + cameraBounds.width / 2;
             cameraBounds.x += cameraBounds.width;
             camera.position.set(new Vector2(cameraXPosition, camera.position.y), 0);
+
         } else if (playerPosition.x < cameraBounds.x) {
 
             var cameraXPosition = playerPosition.x - cameraBounds.width / 2;
             cameraBounds.x -= cameraBounds.width;
             camera.position.set(new Vector2(cameraXPosition, camera.position.y), 0);
+
         } else if (playerPosition.y > cameraBounds.y + cameraBounds.height) {
 
             var cameraYPosition = playerPosition.y + cameraBounds.height / 2;
             cameraBounds.y += cameraBounds.height;
             camera.position.set(new Vector2(camera.position.x, cameraYPosition), 0);
+
         } else if (playerPosition.y < cameraBounds.y) {
 
             var cameraYPosition = playerPosition.y - cameraBounds.height / 2;
@@ -432,34 +435,40 @@ public class Like extends ApplicationAdapter {
             camera.position.set(new Vector2(camera.position.x, cameraYPosition), 0);
         }
 
-//        for (var set : controlsBoundsMap.entrySet()) {
-//
-//            var controlBounds = set.getValue();
-//
-//            if (cameraBounds.x == 0 && cameraBounds.y == 0 )
-//                break;
-//
-//            controlBounds.x = cameraBounds.x + controlBounds.x;
-//            controlBounds.y = cameraBounds.y + controlBounds.x;
+        updateControllerPosition(cameraBounds);
+    }
 
-//            switch (set.getKey()) {
-//                case "up":
-//                    controlBounds.x = cameraBounds.x + controlBounds.x;
-//                    controlBounds.y = cameraBounds.y + controlBounds.x;
-//                    break;
-//                case "down":
-//                    player.velocity.y -= player.speed;
-//                    break;
-//                case "right":
-//                    player.velocity.x += player.speed;
-//                    break;
-//                case "left":
-//                    player.velocity.x -= player.speed;
-//                    break;
-//            }
+    private void updateControllerPosition(Rectangle cameraBounds) {
 
+        var upButtonOffsetPosition = new Vector2(100, 125);
+        var downButtonOffsetPosition = new Vector2(100, 25);
+        var rightButtonOffsetPosition = new Vector2(150, 75);
+        var leftButtonOffsetPosition = new Vector2(50, 75);
 
-//        }
+        for (var set : controlsBoundsMap.entrySet()) {
+
+            var controlBounds = set.getValue();
+
+            switch (set.getKey()) {
+
+                case "up":
+                    controlBounds.x = cameraBounds.x + upButtonOffsetPosition.x;
+                    controlBounds.y = cameraBounds.y + upButtonOffsetPosition.y;
+                    break;
+                case "down":
+                    controlBounds.x = cameraBounds.x + downButtonOffsetPosition.x;
+                    controlBounds.y = cameraBounds.y + downButtonOffsetPosition.y;
+                    break;
+                case "right":
+                    controlBounds.x = cameraBounds.x + rightButtonOffsetPosition.x;
+                    controlBounds.y = cameraBounds.y + rightButtonOffsetPosition.y;
+                    break;
+                case "left":
+                    controlBounds.x = cameraBounds.x + leftButtonOffsetPosition.x;
+                    controlBounds.y = cameraBounds.y + leftButtonOffsetPosition.y;
+                    break;
+            }
+        }
     }
 
     void draw() {
