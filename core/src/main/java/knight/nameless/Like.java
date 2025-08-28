@@ -385,6 +385,7 @@ public class Like extends ApplicationAdapter {
     }
 
     private void handleTouchControls(Rectangle mouseBounds) {
+
         for (var set : controlsBoundsMap.entrySet()) {
 
             if (mouseBounds.overlaps(set.getValue())) {
@@ -392,16 +393,23 @@ public class Like extends ApplicationAdapter {
                 switch (set.getKey()) {
                     case "up":
                         player.velocity.y += player.speed;
+                        player.touchState = AnimationState.UP;
                         break;
                     case "down":
                         player.velocity.y -= player.speed;
+                        player.touchState = AnimationState.DOWN;
                         break;
                     case "right":
                         player.velocity.x += player.speed;
+                        player.touchState = AnimationState.RIGHT;
                         break;
                     case "left":
                         player.velocity.x -= player.speed;
+                        player.touchState = AnimationState.LEFT;
                         break;
+
+                    default:
+                        player.touchState = AnimationState.STANDING;
                 }
 
             }

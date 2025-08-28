@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class Player extends GameObject {
 
+    public AnimationState touchState = AnimationState.STANDING;
     private AnimationState previousState = AnimationState.UP;
     private final Animation<TextureRegion> movingUpAnimations;
     private final Animation<TextureRegion> movingDownAnimations;
@@ -73,16 +74,16 @@ public class Player extends GameObject {
 
     private AnimationState getCurrentAnimationState() {
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP))
+        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP) || touchState == AnimationState.UP)
             return AnimationState.UP;
 
-        else if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN))
+        else if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN) || touchState == AnimationState.DOWN)
             return AnimationState.DOWN;
 
-        else if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT))
+        else if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT) || touchState == AnimationState.LEFT)
             return AnimationState.LEFT;
 
-        else if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+        else if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT) || touchState == AnimationState.RIGHT)
             return AnimationState.RIGHT;
 
         else
