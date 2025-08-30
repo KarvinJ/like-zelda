@@ -90,6 +90,11 @@ public class Like extends ApplicationAdapter {
         controlsBoundsMap.put("down", new Rectangle(100, 25, 32, 32));
         controlsBoundsMap.put("right", new Rectangle(150, 75, 32, 32));
         controlsBoundsMap.put("left", new Rectangle(50, 75, 32, 32));
+
+        controlsBoundsMap.put("shoot", new Rectangle(500, 125, 32, 32));
+        controlsBoundsMap.put("arrow-down", new Rectangle(500, 25, 32, 32));
+        controlsBoundsMap.put("arrow-right", new Rectangle(550, 75, 32, 32));
+        controlsBoundsMap.put("arrow-left", new Rectangle(450, 75, 32, 32));
     }
 
     private Sound loadSound(String filename) {

@@ -58,7 +58,7 @@ public class Enemy extends GameObject {
         }
     }
 
-    private AnimationState getCurrentState() {
+    private AnimationState getCurrentAnimationState() {
 
         //need to check which velocity is higher between the X And Y, to ensure that all animations are played correctly
         if (velocity.y > 0 && velocity.y > velocity.x)
@@ -79,7 +79,7 @@ public class Enemy extends GameObject {
 
     private TextureRegion getAnimationRegion(float deltaTime) {
 
-        AnimationState actualState = getCurrentState();
+        AnimationState actualState = getCurrentAnimationState();
 
         TextureRegion region;
 

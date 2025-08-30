@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class Player extends GameObject {
 
+    public AnimationState actualState = AnimationState.STANDING;
     public AnimationState touchState = AnimationState.STANDING;
     private AnimationState previousState = AnimationState.UP;
     private final Animation<TextureRegion> movingUpAnimations;
@@ -92,7 +93,7 @@ public class Player extends GameObject {
 
     private TextureRegion getAnimationRegion(float deltaTime) {
 
-        AnimationState actualState = getCurrentAnimationState();
+        actualState = getCurrentAnimationState();
 
         TextureRegion region;
 
