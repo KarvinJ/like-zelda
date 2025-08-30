@@ -49,14 +49,14 @@ public class Like extends ApplicationAdapter {
     private final Array<Rectangle> checkpoints = new Array<>();
     private final Array<Arrow> arrows = new Array<>();
     private final Array<GameObject> gameObjects = new Array<>();
-    private final HashMap<String, Rectangle> controlsBoundsMap = new HashMap<>();
+    private final HashMap<String, Button> controlsBoundsMap = new HashMap<>();
     private Music music;
     private Sound arrowSound;
     private Sound hitArrowSound;
     private Sound deathSound;
     private Sound winSound;
     private float shootArrowTimer = 0;
-    private boolean isDebugRenderer = true;
+    private boolean isDebugRenderer = false;
     private boolean isDebugCamera = false;
 
     @Override
@@ -89,17 +89,31 @@ public class Like extends ApplicationAdapter {
         winSound = loadSound("win.wav");
 
         controlTexture = new Texture("images/idle.png");
-//        It will be better to use a texture region to divide this texture by buttons.
 
-        controlsBoundsMap.put("up", new Rectangle(100, 120, 32, 32));
-        controlsBoundsMap.put("down", new Rectangle(100, 30, 32, 32));
-        controlsBoundsMap.put("right", new Rectangle(150, 75, 32, 32));
-        controlsBoundsMap.put("left", new Rectangle(50, 75, 32, 32));
+        var leftButtonRegion = new TextureRegion(controlTexture, 0, 180, 190, 256);
+        var rightButtonRegion = new TextureRegion(controlTexture, 440, 180, 190, 256);
+        var upButtonRegion = new TextureRegion(controlTexture, 180, 0, 256, 190);
+        var downButtonRegion = new TextureRegion(controlTexture, 180, 440, 256, 190);
 
-        controlsBoundsMap.put("shoot-up", new Rectangle(500, 120, 32, 32));
-        controlsBoundsMap.put("shoot-down", new Rectangle(500, 30, 32, 32));
-        controlsBoundsMap.put("shoot-right", new Rectangle(550, 75, 32, 32));
-        controlsBoundsMap.put("shoot-left", new Rectangle(450, 75, 32, 32));
+        var upButton = new Button(upButtonRegion, new Rectangle(100, 120, 32, 32));
+        var downButton = new Button(downButtonRegion, new Rectangle(100, 30, 32, 32));
+        var leftButton = new Button(leftButtonRegion, new Rectangle(50, 75, 32, 32));
+        var rightButton = new Button(rightButtonRegion, new Rectangle(150, 75, 32, 32));
+
+        var shootUpButton = new Button(upButtonRegion, new Rectangle(500, 120, 32, 32));
+        var shootDownButton = new Button(downButtonRegion, new Rectangle(500, 30, 32, 32));
+        var shootLeftButton = new Button(leftButtonRegion, new Rectangle(450, 75, 32, 32));
+        var shootRightButton = new Button(rightButtonRegion, new Rectangle(550, 75, 32, 32));
+
+        controlsBoundsMap.put("up", upButton);
+        controlsBoundsMap.put("down", downButton);
+        controlsBoundsMap.put("right", rightButton);
+        controlsBoundsMap.put("left", leftButton);
+
+        controlsBoundsMap.put("shoot-up", shootUpButton);
+        controlsBoundsMap.put("shoot-down", shootDownButton);
+        controlsBoundsMap.put("shoot-right", shootRightButton);
+        controlsBoundsMap.put("shoot-left", shootLeftButton);
     }
 
     private Sound loadSound(String filename) {
@@ -239,7 +253,7 @@ public class Like extends ApplicationAdapter {
         }
     }
 
-    private void controlCameraPosition(OrthographicCamera camera) {
+    private void controlDebugCamera(OrthographicCamera camera) {
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
             camera.position.x += 5;
@@ -388,7 +402,7 @@ public class Like extends ApplicationAdapter {
             isDebugCamera = !isDebugCamera;
 
         if (isDebugCamera)
-            controlCameraPosition(camera);
+            controlDebugCamera(camera);
         else
             handleCameraMovement();
 
@@ -401,7 +415,7 @@ public class Like extends ApplicationAdapter {
 
         for (var set : controlsBoundsMap.entrySet()) {
 
-            if (mouseBounds.overlaps(set.getValue())) {
+            if (mouseBounds.overlaps(set.getValue().bounds)) {
 
                 switch (set.getKey()) {
                     case "up":
@@ -543,7 +557,7 @@ public class Like extends ApplicationAdapter {
 
         for (var set : controlsBoundsMap.entrySet()) {
 
-            var controlBounds = set.getValue();
+            var controlBounds = set.getValue().bounds;
 
             switch (set.getKey()) {
 
@@ -602,8 +616,10 @@ public class Like extends ApplicationAdapter {
             bullet.draw(mapRenderer.getBatch());
         }
 
-        mapRenderer.getBatch().draw(controlTexture, 50, 25, 128 , 128);
-        mapRenderer.getBatch().draw(controlTexture, 450, 25, 128 , 128);
+        for (var set : controlsBoundsMap.entrySet()) {
+
+            set.getValue().draw(mapRenderer.getBatch());
+        }
 
         mapRenderer.getBatch().end();
     }
@@ -652,7 +668,7 @@ public class Like extends ApplicationAdapter {
         shapeRenderer.setColor(Color.GOLD);
         for (var set : controlsBoundsMap.entrySet()) {
 
-            var controlBounds = set.getValue();
+            var controlBounds = set.getValue().bounds;
             shapeRenderer.rect(controlBounds.x, controlBounds.y, controlBounds.width, controlBounds.height);
         }
 
@@ -673,7 +689,7 @@ public class Like extends ApplicationAdapter {
         tiledMap.dispose();
         mapRenderer.dispose();
         atlas.dispose();
-        arrowRegion.getTexture().dispose();
+        controlTexture.dispose();
 
         music.dispose();
         arrowSound.dispose();
