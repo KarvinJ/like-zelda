@@ -89,6 +89,7 @@ public class Like extends ApplicationAdapter {
         winSound = loadSound("win.wav");
 
         controlTexture = new Texture("images/idle.png");
+//        It will be better to use a texture region to divide this texture by buttons.
 
         controlsBoundsMap.put("up", new Rectangle(100, 120, 32, 32));
         controlsBoundsMap.put("down", new Rectangle(100, 30, 32, 32));
