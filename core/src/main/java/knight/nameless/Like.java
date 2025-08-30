@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -42,6 +43,7 @@ public class Like extends ApplicationAdapter {
     private TextureAtlas atlas;
     private TextureRegion arrowRegion;
     private TiledMap tiledMap;
+    private Texture controlTexture;
     private OrthogonalTiledMapRenderer mapRenderer;
     private final Array<Rectangle> collisionBounds = new Array<>();
     private final Array<Rectangle> checkpoints = new Array<>();
@@ -86,13 +88,15 @@ public class Like extends ApplicationAdapter {
         deathSound = loadSound("fall.wav");
         winSound = loadSound("win.wav");
 
-        controlsBoundsMap.put("up", new Rectangle(100, 125, 32, 32));
-        controlsBoundsMap.put("down", new Rectangle(100, 25, 32, 32));
+        controlTexture = new Texture("images/idle.png");
+
+        controlsBoundsMap.put("up", new Rectangle(100, 120, 32, 32));
+        controlsBoundsMap.put("down", new Rectangle(100, 30, 32, 32));
         controlsBoundsMap.put("right", new Rectangle(150, 75, 32, 32));
         controlsBoundsMap.put("left", new Rectangle(50, 75, 32, 32));
 
-        controlsBoundsMap.put("shoot-up", new Rectangle(500, 125, 32, 32));
-        controlsBoundsMap.put("shoot-down", new Rectangle(500, 25, 32, 32));
+        controlsBoundsMap.put("shoot-up", new Rectangle(500, 120, 32, 32));
+        controlsBoundsMap.put("shoot-down", new Rectangle(500, 30, 32, 32));
         controlsBoundsMap.put("shoot-right", new Rectangle(550, 75, 32, 32));
         controlsBoundsMap.put("shoot-left", new Rectangle(450, 75, 32, 32));
     }
@@ -526,10 +530,15 @@ public class Like extends ApplicationAdapter {
 
     private void updateControllerPosition(Rectangle cameraBounds) {
 
-        var upButtonOffsetPosition = new Vector2(100, 125);
-        var downButtonOffsetPosition = new Vector2(100, 25);
+        var upButtonOffsetPosition = new Vector2(100, 120);
+        var downButtonOffsetPosition = new Vector2(100, 30);
         var rightButtonOffsetPosition = new Vector2(150, 75);
         var leftButtonOffsetPosition = new Vector2(50, 75);
+
+//        var upButtonOffsetPosition = new Vector2(100, 120);
+//        var downButtonOffsetPosition = new Vector2(100, 30);
+//        var rightButtonOffsetPosition = new Vector2(150, 75);
+//        var leftButtonOffsetPosition = new Vector2(50, 75);
 
         for (var set : controlsBoundsMap.entrySet()) {
 
@@ -574,6 +583,9 @@ public class Like extends ApplicationAdapter {
 
             bullet.draw(mapRenderer.getBatch());
         }
+
+        mapRenderer.getBatch().draw(controlTexture, 50, 25, 128 , 128);
+        mapRenderer.getBatch().draw(controlTexture, 450, 25, 128 , 128);
 
         mapRenderer.getBatch().end();
     }
