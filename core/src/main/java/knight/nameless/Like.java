@@ -536,10 +536,10 @@ public class Like extends ApplicationAdapter {
         var rightButtonOffsetPosition = new Vector2(150, 75);
         var leftButtonOffsetPosition = new Vector2(50, 75);
 
-//        var upButtonOffsetPosition = new Vector2(100, 120);
-//        var downButtonOffsetPosition = new Vector2(100, 30);
-//        var rightButtonOffsetPosition = new Vector2(150, 75);
-//        var leftButtonOffsetPosition = new Vector2(50, 75);
+        var upShootButtonOffsetPosition = new Vector2(500, 120);
+        var downShootButtonOffsetPosition = new Vector2(500, 30);
+        var rightShootButtonOffsetPosition = new Vector2(550, 75);
+        var leftShootButtonOffsetPosition = new Vector2(450, 75);
 
         for (var set : controlsBoundsMap.entrySet()) {
 
@@ -562,6 +562,23 @@ public class Like extends ApplicationAdapter {
                 case "left":
                     controlBounds.x = cameraBounds.x + leftButtonOffsetPosition.x;
                     controlBounds.y = cameraBounds.y + leftButtonOffsetPosition.y;
+                    break;
+
+                case "shoot-up":
+                    controlBounds.x = cameraBounds.x + upShootButtonOffsetPosition.x;
+                    controlBounds.y = cameraBounds.y + upShootButtonOffsetPosition.y;
+                    break;
+                case "shoot-down":
+                    controlBounds.x = cameraBounds.x + downShootButtonOffsetPosition.x;
+                    controlBounds.y = cameraBounds.y + downShootButtonOffsetPosition.y;
+                    break;
+                case "shoot-right":
+                    controlBounds.x = cameraBounds.x + rightShootButtonOffsetPosition.x;
+                    controlBounds.y = cameraBounds.y + rightShootButtonOffsetPosition.y;
+                    break;
+                case "shoot-left":
+                    controlBounds.x = cameraBounds.x + leftShootButtonOffsetPosition.x;
+                    controlBounds.y = cameraBounds.y + leftShootButtonOffsetPosition.y;
                     break;
             }
         }
