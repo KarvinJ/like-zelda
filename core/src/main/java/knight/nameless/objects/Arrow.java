@@ -6,13 +6,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public class Bullet {
+public class Arrow {
 
     public final Rectangle bounds;
     private final Vector2 velocity;
     private final TextureRegion textureRegion;
 
-    public Bullet(Rectangle bounds, Vector2 velocity, TextureRegion textureRegion) {
+    public Arrow(Rectangle bounds, Vector2 velocity, TextureRegion textureRegion) {
         this.bounds = bounds;
         this.velocity = velocity;
         this.textureRegion = textureRegion;

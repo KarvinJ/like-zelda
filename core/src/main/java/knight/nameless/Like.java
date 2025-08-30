@@ -45,7 +45,7 @@ public class Like extends ApplicationAdapter {
     private OrthogonalTiledMapRenderer mapRenderer;
     private final Array<Rectangle> collisionBounds = new Array<>();
     private final Array<Rectangle> checkpoints = new Array<>();
-    private final Array<Bullet> bullets = new Array<>();
+    private final Array<Arrow> arrows = new Array<>();
     private final Array<GameObject> gameObjects = new Array<>();
     private final HashMap<String, Rectangle> controlsBoundsMap = new HashMap<>();
     private Music music;
@@ -91,10 +91,10 @@ public class Like extends ApplicationAdapter {
         controlsBoundsMap.put("right", new Rectangle(150, 75, 32, 32));
         controlsBoundsMap.put("left", new Rectangle(50, 75, 32, 32));
 
-        controlsBoundsMap.put("shoot", new Rectangle(500, 125, 32, 32));
-        controlsBoundsMap.put("arrow-down", new Rectangle(500, 25, 32, 32));
-        controlsBoundsMap.put("arrow-right", new Rectangle(550, 75, 32, 32));
-        controlsBoundsMap.put("arrow-left", new Rectangle(450, 75, 32, 32));
+        controlsBoundsMap.put("shoot-up", new Rectangle(500, 125, 32, 32));
+        controlsBoundsMap.put("shoot-down", new Rectangle(500, 25, 32, 32));
+        controlsBoundsMap.put("shoot-right", new Rectangle(550, 75, 32, 32));
+        controlsBoundsMap.put("shoot-left", new Rectangle(450, 75, 32, 32));
     }
 
     private Sound loadSound(String filename) {
@@ -160,7 +160,7 @@ public class Like extends ApplicationAdapter {
         if (enemy.isDestroyed)
             return;
 
-        for (Iterator<Bullet> iterator = bullets.iterator(); iterator.hasNext(); ) {
+        for (Iterator<Arrow> iterator = arrows.iterator(); iterator.hasNext(); ) {
 
             var bullet = iterator.next();
 
@@ -189,7 +189,7 @@ public class Like extends ApplicationAdapter {
 
     public void hasBulletCollide(Rectangle structureBounds) {
 
-        for (Iterator<Bullet> iterator = bullets.iterator(); iterator.hasNext(); ) {
+        for (Iterator<Arrow> iterator = arrows.iterator(); iterator.hasNext(); ) {
 
             var bullet = iterator.next();
 
@@ -269,12 +269,11 @@ public class Like extends ApplicationAdapter {
 
                 var bulletBounds = new Rectangle(playerPosition.x + 16, playerPosition.y + 20, 16, 16);
                 var actualRegion = new TextureRegion(arrowRegion, 48, 0, 16, arrowRegion.getRegionHeight());
-                var bullet = new Bullet(bulletBounds, new Vector2(0, 1), actualRegion);
-                bullets.add(bullet);
+                var bullet = new Arrow(bulletBounds, new Vector2(0, 1), actualRegion);
+                arrows.add(bullet);
 
                 arrowSound.play();
             }
-
 
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 
@@ -286,8 +285,8 @@ public class Like extends ApplicationAdapter {
 
                 var bulletBounds = new Rectangle(playerPosition.x + 16, playerPosition.y, 16, 16);
                 var actualRegion = new TextureRegion(arrowRegion, 16, 0, 16, arrowRegion.getRegionHeight());
-                var bullet = new Bullet(bulletBounds, new Vector2(0, -1), actualRegion);
-                bullets.add(bullet);
+                var bullet = new Arrow(bulletBounds, new Vector2(0, -1), actualRegion);
+                arrows.add(bullet);
 
                 arrowSound.play();
             }
@@ -302,8 +301,8 @@ public class Like extends ApplicationAdapter {
 
                 var bulletBounds = new Rectangle(playerPosition.x, playerPosition.y + 16, 16, 16);
                 var actualRegion = new TextureRegion(arrowRegion, 32, 0, 16, arrowRegion.getRegionHeight());
-                var bullet = new Bullet(bulletBounds, new Vector2(-1, 0), actualRegion);
-                bullets.add(bullet);
+                var bullet = new Arrow(bulletBounds, new Vector2(-1, 0), actualRegion);
+                arrows.add(bullet);
 
                 arrowSound.play();
             }
@@ -318,8 +317,8 @@ public class Like extends ApplicationAdapter {
 
                 var bulletBounds = new Rectangle(playerPosition.x + 20, playerPosition.y + 16, 16, 16);
                 var actualRegion = new TextureRegion(arrowRegion, 0, 0, 16, arrowRegion.getRegionHeight());
-                var bullet = new Bullet(bulletBounds, new Vector2(1, 0), actualRegion);
-                bullets.add(bullet);
+                var bullet = new Arrow(bulletBounds, new Vector2(1, 0), actualRegion);
+                arrows.add(bullet);
 
                 arrowSound.play();
             }
@@ -332,7 +331,7 @@ public class Like extends ApplicationAdapter {
         var mouseBounds = new Rectangle(worldCoordinates.x, worldCoordinates.y, 2, 2);
 
         if (Gdx.input.isTouched())
-            handleTouchControls(mouseBounds);
+            handleTouchControls(mouseBounds, deltaTime);
         else
             player.touchState = AnimationState.STANDING;
 
@@ -375,7 +374,7 @@ public class Like extends ApplicationAdapter {
 
         shootBulletByDirection(deltaTime);
 
-        for (var bullet : bullets) {
+        for (var bullet : arrows) {
 
             bullet.update(deltaTime);
         }
@@ -391,7 +390,9 @@ public class Like extends ApplicationAdapter {
         camera.update();
     }
 
-    private void handleTouchControls(Rectangle mouseBounds) {
+    private void handleTouchControls(Rectangle mouseBounds, float deltaTime) {
+
+        var playerPosition = player.getActualPosition();
 
         for (var set : controlsBoundsMap.entrySet()) {
 
@@ -413,6 +414,77 @@ public class Like extends ApplicationAdapter {
                     case "left":
                         player.velocity.x -= player.speed;
                         player.touchState = AnimationState.LEFT;
+                        break;
+
+                    case "shoot-up":
+
+                        shootArrowTimer += deltaTime;
+
+                        if (shootArrowTimer > 0.5f) {
+
+                            shootArrowTimer = 0;
+
+                            var bulletBounds = new Rectangle(playerPosition.x + 16, playerPosition.y + 20, 16, 16);
+                            var actualRegion = new TextureRegion(arrowRegion, 48, 0, 16, arrowRegion.getRegionHeight());
+                            var bullet = new Arrow(bulletBounds, new Vector2(0, 1), actualRegion);
+                            arrows.add(bullet);
+                            arrowSound.play();
+
+                            player.touchState = AnimationState.UP;
+                        }
+
+                        break;
+                    case "shoot-down":
+
+                        shootArrowTimer += deltaTime;
+
+                        if (shootArrowTimer > 0.5f) {
+
+                            shootArrowTimer = 0;
+
+                            var bulletBounds = new Rectangle(playerPosition.x + 16, playerPosition.y, 16, 16);
+                            var actualRegion = new TextureRegion(arrowRegion, 16, 0, 16, arrowRegion.getRegionHeight());
+                            var bullet = new Arrow(bulletBounds, new Vector2(0, -1), actualRegion);
+                            arrows.add(bullet);
+                            arrowSound.play();
+
+                            player.touchState = AnimationState.DOWN;
+                        }
+
+                        break;
+                    case "shoot-left":
+
+                        shootArrowTimer += deltaTime;
+
+                        if (shootArrowTimer > 0.5f) {
+
+                            shootArrowTimer = 0;
+
+                            var bulletBounds = new Rectangle(playerPosition.x, playerPosition.y + 16, 16, 16);
+                            var actualRegion = new TextureRegion(arrowRegion, 32, 0, 16, arrowRegion.getRegionHeight());
+                            var bullet = new Arrow(bulletBounds, new Vector2(-1, 0), actualRegion);
+                            arrows.add(bullet);
+
+                            arrowSound.play();
+                            player.touchState = AnimationState.LEFT;
+                        }
+                        break;
+                    case "shoot-right":
+
+                        shootArrowTimer += deltaTime;
+
+                        if (shootArrowTimer > 0.5f) {
+
+                            shootArrowTimer = 0;
+
+                            var bulletBounds = new Rectangle(playerPosition.x + 20, playerPosition.y + 16, 16, 16);
+                            var actualRegion = new TextureRegion(arrowRegion, 0, 0, 16, arrowRegion.getRegionHeight());
+                            var bullet = new Arrow(bulletBounds, new Vector2(1, 0), actualRegion);
+                            arrows.add(bullet);
+
+                            arrowSound.play();
+                            player.touchState = AnimationState.RIGHT;
+                        }
                         break;
                 }
 
@@ -498,7 +570,7 @@ public class Like extends ApplicationAdapter {
             gameObject.draw(mapRenderer.getBatch());
         }
 
-        for (var bullet : bullets) {
+        for (var bullet : arrows) {
 
             bullet.draw(mapRenderer.getBatch());
         }
@@ -536,7 +608,7 @@ public class Like extends ApplicationAdapter {
         }
 
         shapeRenderer.setColor(Color.RED);
-        for (var bullet : bullets) {
+        for (var bullet : arrows) {
 
             bullet.draw(shapeRenderer);
         }
