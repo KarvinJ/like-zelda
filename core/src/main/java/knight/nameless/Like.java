@@ -95,15 +95,15 @@ public class Like extends ApplicationAdapter {
         var upButtonRegion = new TextureRegion(controlTexture, 180, 0, 256, 190);
         var downButtonRegion = new TextureRegion(controlTexture, 180, 440, 256, 190);
 
-        var upButton = new Button(upButtonRegion, new Rectangle(100, 120, 32, 32));
-        var downButton = new Button(downButtonRegion, new Rectangle(100, 30, 32, 32));
-        var leftButton = new Button(leftButtonRegion, new Rectangle(50, 75, 32, 32));
-        var rightButton = new Button(rightButtonRegion, new Rectangle(150, 75, 32, 32));
+        var upButton = new Button(upButtonRegion, new Rectangle(84, 120, 48, 32));
+        var downButton = new Button(downButtonRegion, new Rectangle(84, 40, 48, 32));
+        var rightButton = new Button(rightButtonRegion, new Rectangle(134, 75, 32, 48));
+        var leftButton = new Button(leftButtonRegion, new Rectangle(50, 75, 32, 48));
 
-        var shootUpButton = new Button(upButtonRegion, new Rectangle(500, 120, 32, 32));
-        var shootDownButton = new Button(downButtonRegion, new Rectangle(500, 30, 32, 32));
-        var shootLeftButton = new Button(leftButtonRegion, new Rectangle(450, 75, 32, 32));
-        var shootRightButton = new Button(rightButtonRegion, new Rectangle(550, 75, 32, 32));
+        var shootUpButton = new Button(upButtonRegion, new Rectangle(484, 120, 48, 32));
+        var shootDownButton = new Button(downButtonRegion, new Rectangle(484, 40, 48, 32));
+        var shootRightButton = new Button(rightButtonRegion, new Rectangle(534, 75, 32, 48));
+        var shootLeftButton = new Button(leftButtonRegion, new Rectangle(450, 75, 32, 48));
 
         controlsBoundsMap.put("up", upButton);
         controlsBoundsMap.put("down", downButton);
@@ -545,14 +545,14 @@ public class Like extends ApplicationAdapter {
 
     private void updateControllerPosition(Rectangle cameraBounds) {
 
-        var upButtonOffsetPosition = new Vector2(100, 120);
-        var downButtonOffsetPosition = new Vector2(100, 30);
-        var rightButtonOffsetPosition = new Vector2(150, 75);
+        var upButtonOffsetPosition = new Vector2(84, 120);
+        var downButtonOffsetPosition = new Vector2(84, 40);
+        var rightButtonOffsetPosition = new Vector2(134, 75);
         var leftButtonOffsetPosition = new Vector2(50, 75);
 
-        var upShootButtonOffsetPosition = new Vector2(500, 120);
-        var downShootButtonOffsetPosition = new Vector2(500, 30);
-        var rightShootButtonOffsetPosition = new Vector2(550, 75);
+        var upShootButtonOffsetPosition = new Vector2(484, 120);
+        var downShootButtonOffsetPosition = new Vector2(484, 40);
+        var rightShootButtonOffsetPosition = new Vector2(534, 75);
         var leftShootButtonOffsetPosition = new Vector2(450, 75);
 
         for (var set : controlsBoundsMap.entrySet()) {

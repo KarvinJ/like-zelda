@@ -125,7 +125,7 @@ public class Enemy extends GameObject {
         bounds.x += velocity.x * deltaTime;
         bounds.y += velocity.y * deltaTime;
     }
-
+//need to fix that enemy don't disappear after destroy.
     @Override
     public void draw(Batch batch) {
 
