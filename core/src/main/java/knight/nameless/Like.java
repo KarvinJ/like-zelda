@@ -179,26 +179,26 @@ public class Like extends ApplicationAdapter {
             && bounds.y < platform.y + platform.height;
     }
 
-    public void hasBulletCollide(Enemy enemy) {
+    public void hasArrowCollide(Enemy enemy) {
 
         if (enemy.isDestroyed)
             return;
 
         for (Iterator<Arrow> iterator = arrows.iterator(); iterator.hasNext(); ) {
 
-            var bullet = iterator.next();
+            var arrow = iterator.next();
 
-            if (bullet.bounds.overlaps(enemy.bounds)) {
+            if (arrow.bounds.overlaps(enemy.bounds)) {
 
                 iterator.remove();
 
                 if (enemy.actualType != EnemyType.PATROLLER)
                     enemy.health--;
 
-                if (enemy.bounds.x < bullet.bounds.x)
+                if (enemy.bounds.x < arrow.bounds.x)
                     enemy.bounds.x -= 10;
 
-                else if (enemy.bounds.x > bullet.bounds.x)
+                else if (enemy.bounds.x > arrow.bounds.x)
                     enemy.bounds.x += 10;
 
                 if (enemy.health == 0)
@@ -211,13 +211,13 @@ public class Like extends ApplicationAdapter {
         }
     }
 
-    public void hasBulletCollide(Rectangle structureBounds) {
+    public void hasArrowCollide(Rectangle structureBounds) {
 
         for (Iterator<Arrow> iterator = arrows.iterator(); iterator.hasNext(); ) {
 
-            var bullet = iterator.next();
+            var arrow = iterator.next();
 
-            if (bullet.bounds.overlaps(structureBounds)) {
+            if (arrow.bounds.overlaps(structureBounds)) {
 
                 iterator.remove();
                 return;
@@ -229,7 +229,7 @@ public class Like extends ApplicationAdapter {
 
         for (var collisionBound : collisionBounds) {
 
-            hasBulletCollide(collisionBound);
+            hasArrowCollide(collisionBound);
 
             if (gameObject.getCollisionBounds().overlaps(collisionBound)) {
 
@@ -279,7 +279,7 @@ public class Like extends ApplicationAdapter {
             camera.zoom -= 0.2f;
     }
 
-    private void shootBulletByDirection(float deltaTime) {
+    private void shootArrowByDirection(float deltaTime) {
 
         var playerPosition = player.getActualPosition();
 
@@ -291,10 +291,10 @@ public class Like extends ApplicationAdapter {
 
                 shootArrowTimer = 0;
 
-                var bulletBounds = new Rectangle(playerPosition.x + 16, playerPosition.y + 20, 16, 16);
+                var arrowBounds = new Rectangle(playerPosition.x + 16, playerPosition.y + 20, 16, 16);
                 var actualRegion = new TextureRegion(arrowRegion, 48, 0, 16, arrowRegion.getRegionHeight());
-                var bullet = new Arrow(bulletBounds, new Vector2(0, 1), actualRegion);
-                arrows.add(bullet);
+                var arrow = new Arrow(arrowBounds, new Vector2(0, 1), actualRegion);
+                arrows.add(arrow);
 
                 arrowSound.play();
             }
@@ -307,10 +307,10 @@ public class Like extends ApplicationAdapter {
 
                 shootArrowTimer = 0;
 
-                var bulletBounds = new Rectangle(playerPosition.x + 16, playerPosition.y, 16, 16);
+                var arrowBounds = new Rectangle(playerPosition.x + 16, playerPosition.y, 16, 16);
                 var actualRegion = new TextureRegion(arrowRegion, 16, 0, 16, arrowRegion.getRegionHeight());
-                var bullet = new Arrow(bulletBounds, new Vector2(0, -1), actualRegion);
-                arrows.add(bullet);
+                var arrow = new Arrow(arrowBounds, new Vector2(0, -1), actualRegion);
+                arrows.add(arrow);
 
                 arrowSound.play();
             }
@@ -323,10 +323,10 @@ public class Like extends ApplicationAdapter {
 
                 shootArrowTimer = 0;
 
-                var bulletBounds = new Rectangle(playerPosition.x, playerPosition.y + 16, 16, 16);
+                var arrowBounds = new Rectangle(playerPosition.x, playerPosition.y + 16, 16, 16);
                 var actualRegion = new TextureRegion(arrowRegion, 32, 0, 16, arrowRegion.getRegionHeight());
-                var bullet = new Arrow(bulletBounds, new Vector2(-1, 0), actualRegion);
-                arrows.add(bullet);
+                var arrow = new Arrow(arrowBounds, new Vector2(-1, 0), actualRegion);
+                arrows.add(arrow);
 
                 arrowSound.play();
             }
@@ -339,10 +339,10 @@ public class Like extends ApplicationAdapter {
 
                 shootArrowTimer = 0;
 
-                var bulletBounds = new Rectangle(playerPosition.x + 20, playerPosition.y + 16, 16, 16);
+                var arrowBounds = new Rectangle(playerPosition.x + 20, playerPosition.y + 16, 16, 16);
                 var actualRegion = new TextureRegion(arrowRegion, 0, 0, 16, arrowRegion.getRegionHeight());
-                var bullet = new Arrow(bulletBounds, new Vector2(1, 0), actualRegion);
-                arrows.add(bullet);
+                var arrow = new Arrow(arrowBounds, new Vector2(1, 0), actualRegion);
+                arrows.add(arrow);
 
                 arrowSound.play();
             }
@@ -377,7 +377,7 @@ public class Like extends ApplicationAdapter {
                 if (!actualEnemy.isDestroyed && player.getCollisionBounds().overlaps(actualEnemy.getCollisionBounds()))
                     player.hasCollideWithEnemy();
 
-                hasBulletCollide(actualEnemy);
+                hasArrowCollide(actualEnemy);
 
                 actualEnemy.followThePlayer(deltaTime, player.getActualPosition());
 
@@ -396,11 +396,11 @@ public class Like extends ApplicationAdapter {
             }
         }
 
-        shootBulletByDirection(deltaTime);
+        shootArrowByDirection(deltaTime);
 
-        for (var bullet : arrows) {
+        for (var arrow : arrows) {
 
-            bullet.update(deltaTime);
+            arrow.update(deltaTime);
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F2))
@@ -449,10 +449,10 @@ public class Like extends ApplicationAdapter {
 
                             shootArrowTimer = 0;
 
-                            var bulletBounds = new Rectangle(playerPosition.x + 16, playerPosition.y + 20, 16, 16);
+                            var arrowBounds = new Rectangle(playerPosition.x + 16, playerPosition.y + 20, 16, 16);
                             var actualRegion = new TextureRegion(arrowRegion, 48, 0, 16, arrowRegion.getRegionHeight());
-                            var bullet = new Arrow(bulletBounds, new Vector2(0, 1), actualRegion);
-                            arrows.add(bullet);
+                            var arrow = new Arrow(arrowBounds, new Vector2(0, 1), actualRegion);
+                            arrows.add(arrow);
                             arrowSound.play();
 
                             player.touchState = AnimationState.UP;
@@ -467,10 +467,10 @@ public class Like extends ApplicationAdapter {
 
                             shootArrowTimer = 0;
 
-                            var bulletBounds = new Rectangle(playerPosition.x + 16, playerPosition.y, 16, 16);
+                            var arrowBounds = new Rectangle(playerPosition.x + 16, playerPosition.y, 16, 16);
                             var actualRegion = new TextureRegion(arrowRegion, 16, 0, 16, arrowRegion.getRegionHeight());
-                            var bullet = new Arrow(bulletBounds, new Vector2(0, -1), actualRegion);
-                            arrows.add(bullet);
+                            var arrow = new Arrow(arrowBounds, new Vector2(0, -1), actualRegion);
+                            arrows.add(arrow);
                             arrowSound.play();
 
                             player.touchState = AnimationState.DOWN;
@@ -485,10 +485,10 @@ public class Like extends ApplicationAdapter {
 
                             shootArrowTimer = 0;
 
-                            var bulletBounds = new Rectangle(playerPosition.x, playerPosition.y + 16, 16, 16);
+                            var arrowBounds = new Rectangle(playerPosition.x, playerPosition.y + 16, 16, 16);
                             var actualRegion = new TextureRegion(arrowRegion, 32, 0, 16, arrowRegion.getRegionHeight());
-                            var bullet = new Arrow(bulletBounds, new Vector2(-1, 0), actualRegion);
-                            arrows.add(bullet);
+                            var arrow = new Arrow(arrowBounds, new Vector2(-1, 0), actualRegion);
+                            arrows.add(arrow);
 
                             arrowSound.play();
                             player.touchState = AnimationState.LEFT;
@@ -502,10 +502,10 @@ public class Like extends ApplicationAdapter {
 
                             shootArrowTimer = 0;
 
-                            var bulletBounds = new Rectangle(playerPosition.x + 20, playerPosition.y + 16, 16, 16);
+                            var arrowBounds = new Rectangle(playerPosition.x + 20, playerPosition.y + 16, 16, 16);
                             var actualRegion = new TextureRegion(arrowRegion, 0, 0, 16, arrowRegion.getRegionHeight());
-                            var bullet = new Arrow(bulletBounds, new Vector2(1, 0), actualRegion);
-                            arrows.add(bullet);
+                            var arrow = new Arrow(arrowBounds, new Vector2(1, 0), actualRegion);
+                            arrows.add(arrow);
 
                             arrowSound.play();
                             player.touchState = AnimationState.RIGHT;
@@ -618,9 +618,9 @@ public class Like extends ApplicationAdapter {
             gameObject.draw(mapRenderer.getBatch());
         }
 
-        for (var bullet : arrows) {
+        for (var arrow : arrows) {
 
-            bullet.draw(mapRenderer.getBatch());
+            arrow.draw(mapRenderer.getBatch());
         }
 
         if (isAndroid) {
@@ -664,9 +664,9 @@ public class Like extends ApplicationAdapter {
         }
 
         shapeRenderer.setColor(Color.RED);
-        for (var bullet : arrows) {
+        for (var arrow : arrows) {
 
-            bullet.draw(shapeRenderer);
+            arrow.draw(shapeRenderer);
         }
 
         shapeRenderer.setColor(Color.WHITE);
