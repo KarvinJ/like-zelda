@@ -93,7 +93,7 @@ public class Like extends ApplicationAdapter {
         deathSound = loadSound("fall.wav");
         winSound = loadSound("win.wav");
 
-        controlTexture = new Texture("images/idle.png");
+        controlTexture = new Texture("images/controller-buttons.png");
 
         var leftButtonRegion = new TextureRegion(controlTexture, 0, 180, 190, 256);
         var rightButtonRegion = new TextureRegion(controlTexture, 440, 180, 190, 256);
