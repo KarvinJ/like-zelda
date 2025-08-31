@@ -1,5 +1,6 @@
 package knight.nameless;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -58,9 +59,13 @@ public class Like extends ApplicationAdapter {
     private float shootArrowTimer = 0;
     private boolean isDebugRenderer = false;
     private boolean isDebugCamera = false;
+    private boolean isAndroid = false;
 
     @Override
     public void create() {
+
+        if (Gdx.app.getType() == Application.ApplicationType.Android)
+            isAndroid = true;
 
         camera.position.set(SCREEN_WIDTH / 2f, SCREEN_HEIGHT / 2f, 0);
         viewport = new ExtendViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
@@ -349,7 +354,7 @@ public class Like extends ApplicationAdapter {
         Vector3 worldCoordinates = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         var mouseBounds = new Rectangle(worldCoordinates.x, worldCoordinates.y, 2, 2);
 
-        if (Gdx.input.isTouched())
+        if (isAndroid && Gdx.input.isTouched())
             handleTouchControls(mouseBounds, deltaTime);
         else
             player.touchState = AnimationState.STANDING;
@@ -541,7 +546,8 @@ public class Like extends ApplicationAdapter {
             camera.position.set(new Vector2(camera.position.x, cameraYPosition), 0);
         }
 
-        updateControllerPosition(cameraBounds);
+        if (isAndroid)
+            updateControllerPosition(cameraBounds);
     }
 
     private void updateControllerPosition(Rectangle cameraBounds) {
@@ -617,9 +623,12 @@ public class Like extends ApplicationAdapter {
             bullet.draw(mapRenderer.getBatch());
         }
 
-        for (var set : controlsBoundsMap.entrySet()) {
+        if (isAndroid) {
 
-            set.getValue().draw(mapRenderer.getBatch());
+            for (var set : controlsBoundsMap.entrySet()) {
+
+                set.getValue().draw(mapRenderer.getBatch());
+            }
         }
 
         mapRenderer.getBatch().end();
@@ -667,10 +676,14 @@ public class Like extends ApplicationAdapter {
         }
 
         shapeRenderer.setColor(Color.GOLD);
-        for (var set : controlsBoundsMap.entrySet()) {
 
-            var controlBounds = set.getValue().bounds;
-            shapeRenderer.rect(controlBounds.x, controlBounds.y, controlBounds.width, controlBounds.height);
+        if (isAndroid) {
+
+            for (var set : controlsBoundsMap.entrySet()) {
+
+                var controlBounds = set.getValue().bounds;
+                shapeRenderer.rect(controlBounds.x, controlBounds.y, controlBounds.width, controlBounds.height);
+            }
         }
 
         shapeRenderer.rect(cameraBounds.x, cameraBounds.y, cameraBounds.width, cameraBounds.height);
