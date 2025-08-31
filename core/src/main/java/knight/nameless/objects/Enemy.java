@@ -125,18 +125,17 @@ public class Enemy extends GameObject {
         bounds.x += velocity.x * deltaTime;
         bounds.y += velocity.y * deltaTime;
     }
-//need to fix that enemy don't disappear after destroy.
     @Override
     public void draw(Batch batch) {
 
-        if (!isDestroyed || animationTimer < 1)
+        if (!isDestroyed)
             super.draw(batch);
     }
 
     @Override
     public void draw(ShapeRenderer shapeRenderer) {
 
-        if (!isDestroyed || animationTimer < 1)
+        if (!isDestroyed)
             super.draw(shapeRenderer);
     }
 

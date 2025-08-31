@@ -418,6 +418,7 @@ public class Like extends ApplicationAdapter {
             if (mouseBounds.overlaps(set.getValue().bounds)) {
 
                 switch (set.getKey()) {
+
                     case "up":
                         player.velocity.y += player.speed;
                         player.touchState = AnimationState.UP;
