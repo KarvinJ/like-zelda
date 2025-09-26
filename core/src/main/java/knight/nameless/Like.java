@@ -33,7 +33,6 @@ import knight.nameless.objects.*;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 public class Like extends ApplicationAdapter implements InputProcessor {
 
@@ -54,6 +53,9 @@ public class Like extends ApplicationAdapter implements InputProcessor {
     private final Array<Arrow> arrows = new Array<>();
     private final Array<GameObject> gameObjects = new Array<>();
     private final HashMap<String, Button> controlsBoundsMap = new HashMap<>();
+    //In LibGDX, ObjectMap<K, V> is their own implementation of a hash map, this ObjectMap is designed to be faster and allocation-friendly
+    // for games, especially on Android (where GC pauses can hurt).
+    private final ObjectMap<Integer, String> activeControls = new ObjectMap<>();
     private Music music;
     private Sound arrowSound;
     private Sound hitArrowSound;
@@ -63,7 +65,6 @@ public class Like extends ApplicationAdapter implements InputProcessor {
     private boolean isDebugRenderer = false;
     private boolean isDebugCamera = false;
     private boolean isAndroid = false;
-    private final ObjectMap<Integer, String> activeControls = new ObjectMap<>();
 
     @Override
     public void create() {
@@ -356,9 +357,6 @@ public class Like extends ApplicationAdapter implements InputProcessor {
     }
 
     private void update(float deltaTime) {
-
-//        Vector3 worldCoordinates = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-//        var mouseBounds = new Rectangle(worldCoordinates.x, worldCoordinates.y, 2, 2);
 
         if (isAndroid) {
 
@@ -736,10 +734,10 @@ public class Like extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Vector3 worldCoordinates = camera.unproject(new Vector3(screenX, screenY, 0));
-        Rectangle touchBounds = new Rectangle(worldCoordinates.x, worldCoordinates.y, 8, 8);
 
-        // Find which control button was pressed
+        Vector3 worldCoordinates = camera.unproject(new Vector3(screenX, screenY, 0));
+        Rectangle touchBounds = new Rectangle(worldCoordinates.x, worldCoordinates.y, 16, 16);
+
         for (var entry : controlsBoundsMap.entrySet()) {
             if (touchBounds.overlaps(entry.getValue().bounds)) {
                 activeControls.put(pointer, entry.getKey()); // Save pressed control
@@ -751,7 +749,7 @@ public class Like extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        activeControls.remove(pointer); // Release control when finger lifts
+        activeControls.remove(pointer);
         return true;
     }
 
