@@ -363,9 +363,10 @@ public class Like extends ApplicationAdapter implements InputProcessor {
             for (String touchBounds : activeControls.values()) {
                 handleTouchControls(touchBounds, deltaTime);
             }
-        } else
-            player.touchState = AnimationState.STANDING;
 
+            if (activeControls.isEmpty())
+                player.touchState = AnimationState.STANDING;
+        }
         if (player.isDead) {
 
             deathSound.play();
