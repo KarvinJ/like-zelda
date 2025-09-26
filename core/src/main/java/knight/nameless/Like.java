@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
@@ -31,8 +33,9 @@ import knight.nameless.objects.*;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
-public class Like extends ApplicationAdapter {
+public class Like extends ApplicationAdapter implements InputProcessor {
 
     private final int SCREEN_WIDTH = 640;
     private final int SCREEN_HEIGHT = 360;
@@ -60,6 +63,7 @@ public class Like extends ApplicationAdapter {
     private boolean isDebugRenderer = false;
     private boolean isDebugCamera = false;
     private boolean isAndroid = false;
+    private final ObjectMap<Integer, String> activeControls = new ObjectMap<>();
 
     @Override
     public void create() {
@@ -119,6 +123,8 @@ public class Like extends ApplicationAdapter {
         controlsBoundsMap.put("shoot-down", shootDownButton);
         controlsBoundsMap.put("shoot-right", shootRightButton);
         controlsBoundsMap.put("shoot-left", shootLeftButton);
+
+        Gdx.input.setInputProcessor(this);
     }
 
     private Sound loadSound(String filename) {
@@ -351,12 +357,15 @@ public class Like extends ApplicationAdapter {
 
     private void update(float deltaTime) {
 
-        Vector3 worldCoordinates = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-        var mouseBounds = new Rectangle(worldCoordinates.x, worldCoordinates.y, 2, 2);
+//        Vector3 worldCoordinates = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+//        var mouseBounds = new Rectangle(worldCoordinates.x, worldCoordinates.y, 2, 2);
 
-        if (isAndroid && Gdx.input.isTouched())
-            handleTouchControls(mouseBounds, deltaTime);
-        else
+        if (isAndroid) {
+
+            for (String touchBounds : activeControls.values()) {
+                handleTouchControls(touchBounds, deltaTime);
+            }
+        } else
             player.touchState = AnimationState.STANDING;
 
         if (player.isDead) {
@@ -414,106 +423,99 @@ public class Like extends ApplicationAdapter {
         camera.update();
     }
 
-    private void handleTouchControls(Rectangle mouseBounds, float deltaTime) {
+    private void handleTouchControls(String control, float deltaTime) {
 
         var playerPosition = player.getActualPosition();
 
-        for (var set : controlsBoundsMap.entrySet()) {
+        switch (control) {
 
-            if (mouseBounds.overlaps(set.getValue().bounds)) {
+            case "up":
+                player.velocity.y += player.speed;
+                player.touchState = AnimationState.UP;
+                break;
+            case "down":
+                player.velocity.y -= player.speed;
+                player.touchState = AnimationState.DOWN;
+                break;
+            case "right":
+                player.velocity.x += player.speed;
+                player.touchState = AnimationState.RIGHT;
+                break;
+            case "left":
+                player.velocity.x -= player.speed;
+                player.touchState = AnimationState.LEFT;
+                break;
 
-                switch (set.getKey()) {
+            case "shoot-up":
 
-                    case "up":
-                        player.velocity.y += player.speed;
-                        player.touchState = AnimationState.UP;
-                        break;
-                    case "down":
-                        player.velocity.y -= player.speed;
-                        player.touchState = AnimationState.DOWN;
-                        break;
-                    case "right":
-                        player.velocity.x += player.speed;
-                        player.touchState = AnimationState.RIGHT;
-                        break;
-                    case "left":
-                        player.velocity.x -= player.speed;
-                        player.touchState = AnimationState.LEFT;
-                        break;
+                shootArrowTimer += deltaTime;
 
-                    case "shoot-up":
+                if (shootArrowTimer > 0.5f) {
 
-                        shootArrowTimer += deltaTime;
+                    shootArrowTimer = 0;
 
-                        if (shootArrowTimer > 0.5f) {
+                    var arrowBounds = new Rectangle(playerPosition.x + 16, playerPosition.y + 20, 16, 16);
+                    var actualRegion = new TextureRegion(arrowRegion, 48, 0, 16, arrowRegion.getRegionHeight());
+                    var arrow = new Arrow(arrowBounds, new Vector2(0, 1), actualRegion);
+                    arrows.add(arrow);
+                    arrowSound.play();
 
-                            shootArrowTimer = 0;
-
-                            var arrowBounds = new Rectangle(playerPosition.x + 16, playerPosition.y + 20, 16, 16);
-                            var actualRegion = new TextureRegion(arrowRegion, 48, 0, 16, arrowRegion.getRegionHeight());
-                            var arrow = new Arrow(arrowBounds, new Vector2(0, 1), actualRegion);
-                            arrows.add(arrow);
-                            arrowSound.play();
-
-                            player.touchState = AnimationState.UP;
-                        }
-
-                        break;
-                    case "shoot-down":
-
-                        shootArrowTimer += deltaTime;
-
-                        if (shootArrowTimer > 0.5f) {
-
-                            shootArrowTimer = 0;
-
-                            var arrowBounds = new Rectangle(playerPosition.x + 16, playerPosition.y, 16, 16);
-                            var actualRegion = new TextureRegion(arrowRegion, 16, 0, 16, arrowRegion.getRegionHeight());
-                            var arrow = new Arrow(arrowBounds, new Vector2(0, -1), actualRegion);
-                            arrows.add(arrow);
-                            arrowSound.play();
-
-                            player.touchState = AnimationState.DOWN;
-                        }
-
-                        break;
-                    case "shoot-left":
-
-                        shootArrowTimer += deltaTime;
-
-                        if (shootArrowTimer > 0.5f) {
-
-                            shootArrowTimer = 0;
-
-                            var arrowBounds = new Rectangle(playerPosition.x, playerPosition.y + 16, 16, 16);
-                            var actualRegion = new TextureRegion(arrowRegion, 32, 0, 16, arrowRegion.getRegionHeight());
-                            var arrow = new Arrow(arrowBounds, new Vector2(-1, 0), actualRegion);
-                            arrows.add(arrow);
-
-                            arrowSound.play();
-                            player.touchState = AnimationState.LEFT;
-                        }
-                        break;
-                    case "shoot-right":
-
-                        shootArrowTimer += deltaTime;
-
-                        if (shootArrowTimer > 0.5f) {
-
-                            shootArrowTimer = 0;
-
-                            var arrowBounds = new Rectangle(playerPosition.x + 20, playerPosition.y + 16, 16, 16);
-                            var actualRegion = new TextureRegion(arrowRegion, 0, 0, 16, arrowRegion.getRegionHeight());
-                            var arrow = new Arrow(arrowBounds, new Vector2(1, 0), actualRegion);
-                            arrows.add(arrow);
-
-                            arrowSound.play();
-                            player.touchState = AnimationState.RIGHT;
-                        }
-                        break;
+                    player.touchState = AnimationState.UP;
                 }
 
-            }
+                break;
+            case "shoot-down":
+
+                shootArrowTimer += deltaTime;
+
+                if (shootArrowTimer > 0.5f) {
+
+                    shootArrowTimer = 0;
+
+                    var arrowBounds = new Rectangle(playerPosition.x + 16, playerPosition.y, 16, 16);
+                    var actualRegion = new TextureRegion(arrowRegion, 16, 0, 16, arrowRegion.getRegionHeight());
+                    var arrow = new Arrow(arrowBounds, new Vector2(0, -1), actualRegion);
+                    arrows.add(arrow);
+                    arrowSound.play();
+
+                    player.touchState = AnimationState.DOWN;
+                }
+
+                break;
+            case "shoot-left":
+
+                shootArrowTimer += deltaTime;
+
+                if (shootArrowTimer > 0.5f) {
+
+                    shootArrowTimer = 0;
+
+                    var arrowBounds = new Rectangle(playerPosition.x, playerPosition.y + 16, 16, 16);
+                    var actualRegion = new TextureRegion(arrowRegion, 32, 0, 16, arrowRegion.getRegionHeight());
+                    var arrow = new Arrow(arrowBounds, new Vector2(-1, 0), actualRegion);
+                    arrows.add(arrow);
+
+                    arrowSound.play();
+                    player.touchState = AnimationState.LEFT;
+                }
+                break;
+            case "shoot-right":
+
+                shootArrowTimer += deltaTime;
+
+                if (shootArrowTimer > 0.5f) {
+
+                    shootArrowTimer = 0;
+
+                    var arrowBounds = new Rectangle(playerPosition.x + 20, playerPosition.y + 16, 16, 16);
+                    var actualRegion = new TextureRegion(arrowRegion, 0, 0, 16, arrowRegion.getRegionHeight());
+                    var arrow = new Arrow(arrowBounds, new Vector2(1, 0), actualRegion);
+                    arrows.add(arrow);
+
+                    arrowSound.play();
+                    player.touchState = AnimationState.RIGHT;
+                }
+                break;
         }
     }
 
@@ -715,5 +717,61 @@ public class Like extends ApplicationAdapter {
             gameObject.dispose();
 
         gameObjects.clear();
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        Vector3 worldCoordinates = camera.unproject(new Vector3(screenX, screenY, 0));
+        Rectangle touchBounds = new Rectangle(worldCoordinates.x, worldCoordinates.y, 8, 8);
+
+        // Find which control button was pressed
+        for (var entry : controlsBoundsMap.entrySet()) {
+            if (touchBounds.overlaps(entry.getValue().bounds)) {
+                activeControls.put(pointer, entry.getKey()); // Save pressed control
+                break;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        activeControls.remove(pointer); // Release control when finger lifts
+        return true;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return true;
+    }
+
+    @Override
+    public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(float amountX, float amountY) {
+        return false;
     }
 }
