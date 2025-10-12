@@ -148,7 +148,7 @@ public class Enemy extends GameObject {
         if (isDestroyed || !isActive || actualType == EnemyType.PATROLLER)
             return;
 
-        var actualPosition = getActualPosition();
+        var actualPosition = getDrawPosition();
 
         velocity.x = playerPosition.x - actualPosition.x;
         velocity.y = playerPosition.y - actualPosition.y;

@@ -238,20 +238,22 @@ public class Like extends ApplicationAdapter implements InputProcessor {
 
             hasArrowCollide(collisionBound);
 
-            if (gameObject.getCollisionBounds().overlaps(collisionBound)) {
+            var objectCollisionBounds = gameObject.getCollisionBounds();
+
+            if (objectCollisionBounds.overlaps(collisionBound)) {
 
                 if (checkCollisionInX(gameObject.getPreviousPosition(), collisionBound)) {
 
                     if (gameObject.velocity.y < 0)
                         gameObject.bounds.y = collisionBound.y + collisionBound.height;
                     else
-                        gameObject.bounds.y = collisionBound.y - gameObject.bounds.height;
+                        gameObject.bounds.y = collisionBound.y - objectCollisionBounds.height;
 
                     gameObject.velocity.y = 0;
                 } else if (checkCollisionInY(gameObject.getPreviousPosition(), collisionBound)) {
 
                     if (gameObject.velocity.x > 0)
-                        gameObject.bounds.x = collisionBound.x - gameObject.bounds.width;
+                        gameObject.bounds.x = collisionBound.x - objectCollisionBounds.width;
 
                     else
                         gameObject.bounds.x = collisionBound.x + collisionBound.width;
@@ -288,7 +290,7 @@ public class Like extends ApplicationAdapter implements InputProcessor {
 
     private void shootArrowByDirection(float deltaTime) {
 
-        var playerPosition = player.getActualPosition();
+        var playerPosition = player.getDrawPosition();
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
 
@@ -387,9 +389,9 @@ public class Like extends ApplicationAdapter implements InputProcessor {
 
                 hasArrowCollide(actualEnemy);
 
-                actualEnemy.followThePlayer(deltaTime, player.getActualPosition());
+                actualEnemy.followThePlayer(deltaTime, player.getDrawPosition());
 
-                var distance = player.getActualPosition().dst(actualEnemy.getActualPosition());
+                var distance = player.getDrawPosition().dst(actualEnemy.getDrawPosition());
                 if (distance < 300)
                     actualEnemy.isActive = true;
             }
@@ -424,7 +426,7 @@ public class Like extends ApplicationAdapter implements InputProcessor {
 
     private void handleTouchControls(String control, float deltaTime) {
 
-        var playerPosition = player.getActualPosition();
+        var playerPosition = player.getDrawPosition();
 
         switch (control) {
 
@@ -520,7 +522,7 @@ public class Like extends ApplicationAdapter implements InputProcessor {
 
     private void handleCameraMovement() {
 
-        var playerPosition = player.getActualPosition();
+        var playerPosition = player.getDrawPosition();
 
         if (playerPosition.x > cameraBounds.x + cameraBounds.width) {
 

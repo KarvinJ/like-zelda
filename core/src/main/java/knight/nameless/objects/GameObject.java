@@ -44,7 +44,12 @@ public abstract class GameObject {
 
     public void draw(Batch batch) {
 
-        batch.draw(actualRegion, bounds.x, bounds.y, bounds.width, bounds.height);
+        Vector2 drawPosition = getDrawPosition();
+        batch.draw(actualRegion, drawPosition.x, drawPosition.y, bounds.width, bounds.height);
+    }
+
+    public Vector2 getDrawPosition() {
+        return new Vector2(bounds.x - bounds.width / 2 / 2, bounds.y - bounds.height / 2 / 2);
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
@@ -70,8 +75,8 @@ public abstract class GameObject {
 
         var collisionBounds = getCollisionBounds();
 
-        float positionX = collisionBounds.x - velocity.x;
-        float positionY = collisionBounds.y - velocity.y;
+        float positionX = bounds.x - velocity.x;
+        float positionY = bounds.y - velocity.y;
 
         return new Rectangle(positionX, positionY, collisionBounds.width, collisionBounds.height);
     }
@@ -80,15 +85,11 @@ public abstract class GameObject {
     public Rectangle getCollisionBounds() {
 
         return new Rectangle(
-            bounds.x + bounds.width / 2 / 2,
-            bounds.y + bounds.height / 2 / 2,
+            bounds.x,
+            bounds.y,
             bounds.width / 2,
             bounds.height / 2
         );
-    }
-
-    public Vector2 getActualPosition() {
-        return new Vector2(bounds.x, bounds.y);
     }
 
     public void resetToInitialState() {
