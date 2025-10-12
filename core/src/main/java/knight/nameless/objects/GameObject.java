@@ -49,7 +49,7 @@ public abstract class GameObject {
     }
 
     public Vector2 getDrawPosition() {
-        return new Vector2(bounds.x - bounds.width / 2 / 2, bounds.y - bounds.height / 2 / 2);
+        return new Vector2(bounds.x - bounds.width / 4, bounds.y - bounds.height / 4);
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
